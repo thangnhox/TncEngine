@@ -1,1 +1,1 @@
-I create this project to learning how to use VUlkan API in C++
+I create this project to learning how to use Vulkan API in C++
