@@ -68,7 +68,7 @@ namespace vulkanEngine { namespace devices {
 
         SwapChainSupportDetail getSwapChainSupport() { return querySwapChainSupport(m_PhysicalDevice, m_Surface); }
         uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
-        QueueFamilyIndices findPhysicalQueueFamilies() { findQueueFamily(m_PhysicalDevice, m_Surface); }
+        QueueFamilyIndices findPhysicalQueueFamilies() { return findQueueFamily(m_PhysicalDevice, m_Surface); }
         VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
         // buffering

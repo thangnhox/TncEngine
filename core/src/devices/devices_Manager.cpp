@@ -24,7 +24,7 @@ namespace vulkanEngine { namespace devices {
 
         if(s_EnableValidationLayers)
         {
-            vkDestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
+            DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
         }
 
         vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
