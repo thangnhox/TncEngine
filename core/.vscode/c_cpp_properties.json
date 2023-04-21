@@ -3,7 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/vendore/spdlog/include"
             ],
             "defines": ["DEBUG"],
             "compilerPath": "/usr/bin/g++",
