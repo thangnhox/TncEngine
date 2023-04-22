@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "core.hpp"
+#include "Core.hpp"
 #include <spdlog/spdlog.h>
 
 namespace TncEngine {
