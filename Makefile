@@ -11,7 +11,10 @@ SPDLOG_INCLUDE = -Icore/vendore/spdlog/include
 # My library
 CORE_INCLUDE = -Icore/src
 
-.PHONY: core sandbox
+.PHONY: core sandbox setup
+
+setup:
+	mkdir -p bin/intermidiate bin/objectFiles/core bin/lib
 
 core:
 	g++ $(LIB_BUILD) $(CFLAGS) $(GDBFLAG) $(SPDLOG_INCLUDE) $(CORE_INCLUDE) -c $(shell find core/src/ -name '*.cpp')
