@@ -9,3 +9,5 @@
 #else
     #define TncEngine_API
 #endif
+
+#define BIT(x) (1 << x)

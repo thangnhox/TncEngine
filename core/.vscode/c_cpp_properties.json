@@ -3,6 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
+                "${workspaceFolder}/src",
                 "${workspaceFolder}/vendore/spdlog/include"
             ],
             "defines": ["DEBUG"],
