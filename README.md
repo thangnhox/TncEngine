@@ -1,3 +1,4 @@
-I create this project to learning how to use Vulkan API in C++
+learn making a game engine from 0 with c++
 
-long to update
+to clone:
+run: git clone --recursive https://github.com/thangnhox/TncEngine.git
