@@ -2,8 +2,7 @@
 
 #include <TncEngine/Core.hpp>
 
-#include <string>
-#include <functional>
+#include <TncPCH.hpp>
 
 namespace TncEngine {
 
