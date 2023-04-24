@@ -18,7 +18,7 @@ setup:
 	mkdir -p bin/intermidiate bin/objectFiles/core bin/lib
 
 core:
-	g++ $(LIB_BUILD) $(CFLAGS) $(GDBFLAG) $(SPDLOG_INCLUDE) $(CORE_INCLUDE) -c $(shell find core/src/ -name '*.cpp')
+	g++ $(LIB_BUILD) $(CFLAGS) $(SPDLOG_INCLUDE) $(CORE_INCLUDE) -c $(shell find core/src/ -name '*.cpp')
 	mv *.o bin/objectFiles/core/
 	ar src bin/lib/libTncEngineCore.a $(shell find bin/objectFiles/core/ -name '*.o')
 
