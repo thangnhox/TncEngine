@@ -1,3 +1,6 @@
 [submodule "core/vendore/spdlog"]
 	path = core/vendore/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "core/vendore/GLFW"]
+	path = core/vendore/GLFW
+	url = https://github.com/glfw/glfw

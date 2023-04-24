@@ -12,6 +12,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include <TncEngine/Log.hpp>
+
 #ifdef TNC_PLATFORM_WINDOWS
     #include <Windows.h>
 #endif

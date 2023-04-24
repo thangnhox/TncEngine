@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Core.hpp"
-#include "Events/Event.hpp"
+#include <TncEngine/Core.hpp>
+#include <TncEngine/Events/Event.hpp>
+
+#include <TncEngine/Window.hpp>
 
 namespace TncEngine {
 
@@ -12,6 +14,9 @@ namespace TncEngine {
         virtual ~Application();
 
         void run();
+    private:
+        std::unique_ptr<Window> m_Window;
+        bool m_Running;
     };
 
     // TOBE: define in client
