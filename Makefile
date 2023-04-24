@@ -28,7 +28,7 @@ core:
 	ar src bin/lib/libTncEngineCore.a $(shell find bin/objectFiles/core/ -name '*.o')
 
 core_PCH:
-	g++ $(CFLAGS) core/src/TncPCH.hpp
+	g++ $(CFLAGS) $(SPDLOG_INCLUDE) $(CORE_INCLUDE) core/src/TncPCH.hpp
 
 sandbox:
-	g++ -Lbin/lib $(CORE_INCLUDE) $(SPDLOG_INCLUDE) -o bin/intermidiate/SanboxApp $(shell find sandbox/src/ -name '*.cpp') $(CORE_FLAG) $(GLFW_FLAG)
+	g++ -Lbin/lib $(CORE_INCLUDE) $(SPDLOG_INCLUDE) -o bin/intermidiate/SandboxApp $(shell find sandbox/src/ -name '*.cpp') $(CORE_FLAG) $(GLFW_FLAG)
