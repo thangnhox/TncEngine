@@ -27,14 +27,15 @@ namespace TncEngine {
 
         void OnUpdate();
 
-        uint32_t GetWidth() const { return m_Data.Width; }
-        uint32_t GetHeight() const { return m_Data.Height; }
+        inline uint32_t GetWidth() const { return m_Data.Width; }
+        inline uint32_t GetHeight() const { return m_Data.Height; }
+        inline bool IsVSync() const { return m_Data.VSync; }
+        inline bool ShouldClose() const { return glfwWindowShouldClose(m_Window); }
 
         void SetEventCallback(const EventCallbackFn& callback);
         void SetVSync(bool enabled);
-        bool IsVSync() const { return m_Data.VSync; }
 
-        static Window* Create(const WindowProps& props = WindowProps());
+        static std::unique_ptr<Window> Create(const WindowProps& props = WindowProps());
     private:
         Window(const WindowProps& props);
         void Init(const WindowProps& props);

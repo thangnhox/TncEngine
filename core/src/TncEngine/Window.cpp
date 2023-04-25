@@ -1,5 +1,7 @@
 #include "Window.hpp"
 
+#include <TncPCH.hpp>
+
 namespace TncEngine {
 
     static bool s_GLFWInitialized = false;
@@ -35,9 +37,9 @@ namespace TncEngine {
         m_Data.VSync = enabled;
     }
 
-    Window *Window::Create(const WindowProps &props)
+    std::unique_ptr<Window> Window::Create(const WindowProps &props)
     {
-        return new Window(props);
+        return std::unique_ptr<Window>(new Window(props));
     }
 
     void Window::Init(const WindowProps &props)
@@ -45,6 +47,8 @@ namespace TncEngine {
         m_Data.Title = props.Title;
         m_Data.Width = props.Width;
         m_Data.Height = props.Height;
+
+        TncEngine_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
         if (!s_GLFWInitialized)
         {
