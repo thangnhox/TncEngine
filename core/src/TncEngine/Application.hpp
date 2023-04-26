@@ -2,6 +2,7 @@
 
 #include <TncEngine/Core.hpp>
 #include <TncEngine/Events/Event.hpp>
+#include <TncEngine/Events/ApplicationEvent.hpp>
 
 #include <TncEngine/Window.hpp>
 
@@ -14,6 +15,9 @@ namespace TncEngine {
         virtual ~Application();
 
         void run();
+        void OnEvent(Event& e);
+    private:
+        bool OnWindowClose(WindowClosedEvent& e);
     private:
         std::unique_ptr<Window> m_Window;
         bool m_Running;
