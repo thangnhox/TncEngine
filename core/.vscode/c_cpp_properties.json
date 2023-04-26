@@ -4,7 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/src",
-                "${workspaceFolder}/vendore/spdlog/include"
+                "${workspaceFolder}/vendore/spdlog/include",
+                "${workspaceFolder}/vendore/GLFW/include"
             ],
             "defines": ["DEBUG"],
             "compilerPath": "/usr/bin/g++",

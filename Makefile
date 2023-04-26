@@ -11,6 +11,7 @@ CORE_FLAG = -lTncEngineCore
 
 # Third party include
 SPDLOG_INCLUDE = -Icore/vendore/spdlog/include
+GLFW_INCLUDE = -Icore/vendore/GLFW/include
 
 # My include
 CORE_INCLUDE = -Icore/src
@@ -23,7 +24,7 @@ setup:
 	cd bin/submoduleBuild/GLFW && $(MAKE) && cp src/libglfw3.a ../../lib/
 
 core:
-	g++ $(LIB_BUILD) $(CFLAGS) $(SPDLOG_INCLUDE) $(CORE_INCLUDE) $(ENABLE_ASSERT) -c $(shell find core/src/ -name '*.cpp')
+	g++ $(LIB_BUILD) $(CFLAGS) $(SPDLOG_INCLUDE) $(GLFW_INCLUDE) $(CORE_INCLUDE) $(ENABLE_ASSERT) -c $(shell find core/src/ -name '*.cpp')
 	mv *.o bin/objectFiles/core/
 	ar src bin/lib/libTncEngineCore.a $(shell find bin/objectFiles/core/ -name '*.o')
 
@@ -31,4 +32,4 @@ core_PCH:
 	g++ $(CFLAGS) $(SPDLOG_INCLUDE) $(CORE_INCLUDE) core/src/TncPCH.hpp
 
 sandbox:
-	g++ -Lbin/lib $(CORE_INCLUDE) $(SPDLOG_INCLUDE) -o bin/intermidiate/SandboxApp $(shell find sandbox/src/ -name '*.cpp') $(CORE_FLAG) $(GLFW_FLAG)
+	g++ -Lbin/lib $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLFW_INCLUDE) -o bin/intermidiate/SandboxApp $(shell find sandbox/src/ -name '*.cpp') $(CORE_FLAG) $(GLFW_FLAG)
