@@ -18,8 +18,10 @@ CORE_INCLUDE = -Icore/src
 
 .PHONY: core sandbox setup core_PCH test
 
+# Make some empty object files in case find could not detect files in first compile
 setup:
 	mkdir -p bin/intermidiate bin/objectFiles/core bin/lib bin/submoduleBuild/GLFW
+	touch bin/objectFiles/core/Application.o bin/objectFiles/core/Log.o bin/objectFiles/core/Window.o bin/objectFiles/core/Layer.o bin/objectFiles/core/LayerStack.o
 	cmake -S core/vendore/GLFW -B bin/submoduleBuild/GLFW
 	cd bin/submoduleBuild/GLFW && $(MAKE) && cp src/libglfw3.a ../../lib/
 

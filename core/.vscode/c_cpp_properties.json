@@ -7,7 +7,7 @@
                 "${workspaceFolder}/vendore/spdlog/include",
                 "${workspaceFolder}/vendore/GLFW/include"
             ],
-            "defines": ["DEBUG"],
+            "defines": ["DEBUG", "ENABLE_ASSERT"],
             "compilerPath": "/usr/bin/g++",
             "cStandard": "gnu17",
             "cppStandard": "gnu++17",
