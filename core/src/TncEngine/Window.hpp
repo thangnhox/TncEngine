@@ -3,6 +3,7 @@
 #include <TncPCH.hpp>
 #include <TncEngine/Events/Event.hpp>
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 namespace TncEngine {
