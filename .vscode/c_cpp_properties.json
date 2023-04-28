@@ -3,13 +3,17 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/core/src",
+                "${workspaceFolder}/core/vendore/spdlog/include",
+                "${workspaceFolder}/core/vendore/GLFW/include",
+                "${workspaceFolder}/core/vendore/Glad/include"
             ],
             "defines": ["ENABLE_ASSERT"],
             "compilerPath": "/usr/bin/g++",
-            "cStandard": "c17",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "linux-clang-x64"
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "linux-gcc-x64",
+            "configurationProvider": "ms-vscode.makefile-tools"
         }
     ],
     "version": 4
