@@ -1,3 +1,4 @@
 **/debug
 bin
 *.gch
+imgui.ini

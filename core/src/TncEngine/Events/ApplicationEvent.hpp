@@ -12,8 +12,8 @@ namespace TncEngine {
         WindowResizeEvent(uint32_t width, uint32_t height)
             : m_Width(width), m_Height(height) {}
         
-        inline uint32_t getWidth() { return m_Width; }
-        inline uint32_t getHeight() { return m_Height; }
+        inline uint32_t GetWidth() { return m_Width; }
+        inline uint32_t GetHeight() { return m_Height; }
 
         std::string ToString() const override
         {
