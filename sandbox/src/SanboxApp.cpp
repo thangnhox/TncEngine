@@ -24,6 +24,7 @@ public:
     Sanbox()
     {
         PushLayer(new ExampleLayer());
+        PushOverlay(new TncEngine::ImGuiLayer());
     }
 
     ~Sanbox()

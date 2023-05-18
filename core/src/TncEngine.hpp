@@ -5,6 +5,7 @@
 #include "TncEngine/Layers/Layer.hpp"
 #include "TncEngine/Log.hpp"
 
+#include "TncEngine/Layers/ImGuiLayer.hpp"
 // ------ Entry Point --------------
 #include "TncEngine/EntryPoint.hpp"
 // ---------------------------------

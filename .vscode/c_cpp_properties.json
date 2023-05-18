@@ -6,7 +6,9 @@
                 "${workspaceFolder}/core/src",
                 "${workspaceFolder}/core/vendore/spdlog/include",
                 "${workspaceFolder}/core/vendore/GLFW/include",
-                "${workspaceFolder}/core/vendore/Glad/include"
+                "${workspaceFolder}/core/vendore/Glad/include",
+                "${workspaceFolder}/core/vendore/ImGUI/backends",
+                "${workspaceFolder}/core/vendore/ImGUI/frontends"
             ],
             "defines": ["ENABLE_ASSERT"],
             "compilerPath": "/usr/bin/g++",
