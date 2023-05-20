@@ -7,6 +7,7 @@ GDBFLAG = -g
 DEFINE = -D DEBUG
 ENABLE_ASSERT = -D ENABLE_ASSERT
 GLFW_INCLUDE_NONE = -D GLFW_INCLUDE_NONE
+TNC_DEBUG = -D TNC_DEBUG
 
 # Libraries
 GLFW_FLAG = -lglfw3
@@ -39,7 +40,7 @@ setup:
 	cd bin/submoduleBuild/GLFW && $(MAKE) && cp src/libglfw3.a ../../lib/
 
 core:
-	g++ $(LIB_BUILD) $(CPPFLAGS) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(GLFW_INCLUDE) $(CORE_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(ENABLE_ASSERT) -c $(shell find core/src/ -name '*.cpp')
+	g++ $(LIB_BUILD) $(CPPFLAGS) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(GLFW_INCLUDE) $(CORE_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(TNC_DEBUG) -c $(shell find core/src/ -name '*.cpp')
 	mv *.o bin/objectFiles/core/
 	ar src bin/lib/libTncEngineCore.a $(shell find bin/objectFiles/core/ -name '*.o')
 

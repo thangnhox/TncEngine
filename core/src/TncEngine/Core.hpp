@@ -10,12 +10,16 @@
     #define TncEngine_API
 #endif
 
+#ifdef TNC_DEBUG
+    #define ENABLE_ASSERT
+#endif
+
 #ifdef ENABLE_ASSERT
     #define ASSERT_CORE(x, ...) { if(!(x)) { TncEngine_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); } }
     #define ASSERT(x, ...) { if(!(x)) { TncEngine_ERROR("Assertion Failed: {0}", __VA_ARGS__); } }
 #else
-    #define ASSERT_CORE
-    #define ASSERT
+    #define ASSERT_CORE(x, ...)
+    #define ASSERT(x, ...)
 #endif
 
 #define BIT(x) (1 << x)
