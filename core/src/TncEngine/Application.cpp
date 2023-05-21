@@ -1,7 +1,8 @@
+#include <TncPCH.hpp>
 #include "Application.hpp"
 
 #include <TncEngine/Events/ApplicationEvent.hpp>
-#include <TncPCH.hpp>
+#include <TncEngine/Input/Input.hpp>
 
 namespace TncEngine {
 
@@ -53,6 +54,9 @@ namespace TncEngine {
         {
             for (Layer* layer : m_LayerStack)
                 layer->OnUpdate();
+
+            auto [x, y] = Input::GetMousePosition();
+            TncEngine_CORE_TRACE("{0}, {1}", x, y);
 
             m_Window->OnUpdate();
         }

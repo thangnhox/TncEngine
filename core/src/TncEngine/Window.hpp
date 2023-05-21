@@ -32,6 +32,7 @@ namespace TncEngine {
         inline uint32_t GetHeight() const { return m_Data.Height; }
         inline bool IsVSync() const { return m_Data.VSync; }
         inline bool ShouldClose() const { return glfwWindowShouldClose(m_Window); }
+        inline void* GetNativeWindow() const { return m_Window; }
 
         void SetEventCallback(const EventCallbackFn& callback);
         void SetVSync(bool enabled);
