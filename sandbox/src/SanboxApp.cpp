@@ -9,12 +9,19 @@ public:
 
     void OnUpdate() override
     {
-        TncEngine_INFO("ExampleLayer::Update");
+        if (TncEngine::Input::IsKeyPressed(TNC_KEY_TAB))
+            TncEngine_TRACE("Tab key is pressed! (poll)");
     }
 
     void OnEvent(TncEngine::Event& event) override
     {
-        TncEngine_TRACE("{0}", event);
+        if (event.GetEventType() == TncEngine::EventType::KeyPressed)
+        {
+            TncEngine::KeyPressedEvent& e = (TncEngine::KeyPressedEvent&)event;
+            if (e.GetKeyCode() == TNC_KEY_TAB)
+                TncEngine_TRACE("Tab key is pressed! (event)");
+            TncEngine_TRACE("{0}", (char)e.GetKeyCode());
+        }
     }
 };
 
