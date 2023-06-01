@@ -8,7 +8,8 @@
                 "${workspaceFolder}/core/vendore/GLFW/include",
                 "${workspaceFolder}/core/vendore/Glad/include",
                 "${workspaceFolder}/core/vendore/ImGUI/backends",
-                "${workspaceFolder}/core/vendore/ImGUI/frontends"
+                "${workspaceFolder}/core/vendore/ImGUI/frontends",
+                "${workspaceFolder}/core/vendore/glm"
             ],
             "defines": ["TNC_DEBUG"],
             "compilerPath": "/usr/bin/g++",
