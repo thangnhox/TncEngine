@@ -7,6 +7,7 @@
 #include <TncEngine/Events/Event.hpp>
 #include <TncEngine/Events/ApplicationEvent.hpp>
 
+#include <TncEngine/Layers/ImGuiLayer.hpp>
 
 namespace TncEngine {
 
@@ -29,6 +30,7 @@ namespace TncEngine {
         bool OnWindowClose(WindowClosedEvent& e);
     private:
         std::unique_ptr<Window> m_Window;
+        ImGuiLayer* m_ImGuiLayer;
         bool m_Running;
         LayerStack m_LayerStack;
     private:
