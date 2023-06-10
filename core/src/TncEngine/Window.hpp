@@ -3,8 +3,7 @@
 #include <TncPCH.hpp>
 #include <TncEngine/Events/Event.hpp>
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <TncEngine/Renderer/GraphicsContext.hpp>
 
 namespace TncEngine {
 
@@ -44,6 +43,7 @@ namespace TncEngine {
         void Shutdown();
     private:
         GLFWwindow* m_Window;
+        GraphicsContext* m_Context;
 
         struct WindowData : public WindowProps
         {

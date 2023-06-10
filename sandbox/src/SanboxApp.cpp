@@ -14,6 +14,8 @@
 //     return Projection * View * Model;
 // }
 
+#include <imgui.h>
+
 class ExampleLayer : public TncEngine::Layer
 {
 public:
@@ -37,6 +39,13 @@ public:
                 TncEngine_TRACE("Tab key is pressed! (event)");
             TncEngine_TRACE("{0}", (char)e.GetKeyCode());
         }
+    }
+
+    void OnImGuiRender() override
+    {
+        ImGui::Begin("Test");
+        ImGui::Text("Hello World");
+        ImGui::End();
     }
 };
 
