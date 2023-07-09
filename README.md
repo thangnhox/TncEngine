@@ -4,3 +4,5 @@ to clone:
 run: git clone --recursive https://github.com/thangnhox/TncEngine.git
 
 Generate glad using: https://glad.dav1d.de/
+
+this branch is to test on termux x11 remote desktop
