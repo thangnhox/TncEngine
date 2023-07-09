@@ -1,6 +1,6 @@
 #pragma once
 
-#include <TncPCH.hpp>
+#include "TncPCH.hpp"
 #include <TncEngine/Events/Event.hpp>
 
 #include <TncEngine/Renderer/GraphicsContext.hpp>

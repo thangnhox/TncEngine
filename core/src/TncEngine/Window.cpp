@@ -1,4 +1,4 @@
-#include <TncPCH.hpp>
+#include "TncPCH.hpp"
 #include "Window.hpp"
 
 #include <TncEngine/Events/ApplicationEvent.hpp>

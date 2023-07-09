@@ -9,6 +9,8 @@
 
 #include <TncEngine/Layers/ImGuiLayer.hpp>
 
+#include <TncEngine/Renderer/Shader.hpp>
+
 namespace TncEngine {
 
     class TncEngine_API Application
@@ -33,6 +35,9 @@ namespace TncEngine {
         ImGuiLayer* m_ImGuiLayer;
         bool m_Running;
         LayerStack m_LayerStack;
+
+        uint32_t m_VertexArray, m_VertexBuffer, m_IndexBuffer;
+        std::unique_ptr<Shader> m_Shader;
     private:
         static Application* s_Instance;
     };

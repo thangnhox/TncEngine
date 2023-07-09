@@ -2,7 +2,7 @@
 
 #include "Event.hpp"
 
-#include <TncPCH.hpp>
+#include "TncPCH.hpp"
 
 namespace TncEngine {
 

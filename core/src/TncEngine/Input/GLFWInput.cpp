@@ -1,4 +1,4 @@
-#include <TncPCH.hpp>
+#include "TncPCH.hpp"
 #include "GLFWInput.hpp"
 
 #include <TncEngine/Application.hpp>
