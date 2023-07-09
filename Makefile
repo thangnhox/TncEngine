@@ -10,7 +10,7 @@ GLFW_INCLUDE_NONE = -D GLFW_INCLUDE_NONE
 TNC_DEBUG = -D TNC_DEBUG
 
 # Libraries
-GLFW_FLAG = -lglfw3
+GLFW_FLAG = -lglfw
 GLAD_FLAG = -lglad
 CORE_FLAG = -lTncEngineCore
 GL_FLAG = -lGL
@@ -31,14 +31,14 @@ CORE_INCLUDE = -Icore/src
 
 # Make some empty object files in case find could not detect files in first compile
 setup:
+	pkg upgrade -y
+	pkg install mesa-dev glfw opengl -y
 	mkdir -p bin/intermidiate bin/objectFiles/core bin/lib bin/submoduleBuild/GLFW
-	touch bin/objectFiles/core/Application.o bin/objectFiles/core/Log.o bin/objectFiles/core/Window.o bin/objectFiles/core/Layer.o bin/objectFiles/core/LayerStack.o bin/objectFiles/core/ImGuiLayer.o bin/objectFiles/core/GLFWInput.o bin/objectFiles/core/OpenGLContext.o
+	touch bin/objectFiles/core/Application.o bin/objectFiles/core/Log.o bin/objectFiles/core/Window.o bin/objectFiles/core/Layer.o bin/objectFiles/core/LayerStack.o bin/objectFiles/core/ImGuiLayer.o bin/objectFiles/core/GLFWInput.o bin/objectFiles/core/OpenGLContext.o bin/objectFiles/core/Shader.o
 	mkdir -p bin/objectFiles/glad
 	touch bin/objectFiles/glad/glad.o
 	mkdir -p bin/objectFiles/imgui
 	touch bin/objectFiles/imgui/imgui_impl_opengl3.o bin/objectFiles/imgui/imgui_tables.o bin/objectFiles/imgui/imgui_demo.o bin/objectFiles/imgui/imgui_widgets.o bin/objectFiles/imgui/imgui.o bin/objectFiles/imgui/imgui_draw.o bin/objectFiles/imgui/imgui_impl_glfw.o
-	cmake -S core/vendore/GLFW -B bin/submoduleBuild/GLFW
-	cd bin/submoduleBuild/GLFW && $(MAKE) && cp src/libglfw3.a ../../lib/
 
 core:
 	g++ $(LIB_BUILD) $(CPPFLAGS) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(GLFW_INCLUDE) $(CORE_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(TNC_DEBUG) -c $(shell find core/src/ -name '*.cpp')
