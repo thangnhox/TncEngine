@@ -83,7 +83,7 @@ namespace TncEngine {
         // Check linking
         GLint isLinked = 0;
         glGetProgramiv(m_RendererID, GL_LINK_STATUS, (int*)&isLinked);
-        if (!isLinked == GL_FALSE)
+        if (isLinked == GL_FALSE)
         {
             GLint maxLength = 0;
             glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &maxLength);
