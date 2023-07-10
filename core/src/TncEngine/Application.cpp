@@ -72,6 +72,7 @@ namespace TncEngine {
         )";
 
         m_Shader.reset(new Shader(vertexSrc, fragmentSrc));
+        m_Running = true;
     }
 
     Application::~Application()
