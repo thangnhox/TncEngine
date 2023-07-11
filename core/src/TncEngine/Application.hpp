@@ -10,6 +10,7 @@
 #include <TncEngine/Layers/ImGuiLayer.hpp>
 
 #include <TncEngine/Renderer/Shader.hpp>
+#include <TncEngine/Renderer/Buffer.hpp>
 
 namespace TncEngine {
 
@@ -36,8 +37,10 @@ namespace TncEngine {
         bool m_Running;
         LayerStack m_LayerStack;
 
-        uint32_t m_VertexArray, m_VertexBuffer, m_IndexBuffer;
+        uint32_t m_VertexArray;
         std::unique_ptr<Shader> m_Shader;
+        std::unique_ptr<VertexBuffer> m_VertexBuffer;
+        std::unique_ptr<IndexBuffer> m_IndexBuffer;
     private:
         static Application* s_Instance;
     };
