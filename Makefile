@@ -32,7 +32,10 @@ CORE_INCLUDE = -Icore/src
 # Make some empty object files in case find could not detect files in first compile
 setup:
 	mkdir -p bin/intermidiate bin/objectFiles/core bin/lib bin/submoduleBuild/GLFW
-	touch bin/objectFiles/core/Application.o bin/objectFiles/core/Log.o bin/objectFiles/core/Window.o bin/objectFiles/core/Layer.o bin/objectFiles/core/LayerStack.o bin/objectFiles/core/ImGuiLayer.o bin/objectFiles/core/GLFWInput.o bin/objectFiles/core/OpenGLContext.o
+	touch bin/objectFiles/core/Application.o bin/objectFiles/core/Log.o bin/objectFiles/core/Window.o
+	touch bin/objectFiles/core/Layer.o bin/objectFiles/core/LayerStack.o bin/objectFiles/core/ImGuiLayer.o
+	touch bin/objectFiles/core/GLFWInput.o
+	touch bin/objectFiles/core/OpenGLContext.o bin/objectFiles/core/Shader.o bin/objectFiles/core/Buffer.o bin/objectFiles/core/OpenGLBuffer.o bin/objectFiles/core/Renderer.o
 	mkdir -p bin/objectFiles/glad
 	touch bin/objectFiles/glad/glad.o
 	mkdir -p bin/objectFiles/imgui
