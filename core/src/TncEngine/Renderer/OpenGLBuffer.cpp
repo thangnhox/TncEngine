@@ -10,7 +10,7 @@ namespace TncEngine {
     OpenGLVertexBuffer::OpenGLVertexBuffer(float *vertices, uint32_t size)
     {
         glCreateBuffers(1, &m_BufferID);
-        Bind();
+        glBindBuffer(GL_ARRAY_BUFFER, m_BufferID);
         glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
     }
 
@@ -37,7 +37,7 @@ namespace TncEngine {
         : m_Count(count)
     {
         glCreateBuffers(1, &m_BufferID);
-        Bind();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_BufferID);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
     }
 
