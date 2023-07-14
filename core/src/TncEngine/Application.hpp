@@ -11,6 +11,7 @@
 
 #include <TncEngine/Renderer/Shader.hpp>
 #include <TncEngine/Renderer/Buffer.hpp>
+#include <TncEngine/Renderer/VertexArray.hpp>
 
 namespace TncEngine {
 
@@ -37,10 +38,8 @@ namespace TncEngine {
         bool m_Running;
         LayerStack m_LayerStack;
 
-        uint32_t m_VertexArray;
-        std::unique_ptr<Shader> m_Shader;
-        std::unique_ptr<VertexBuffer> m_VertexBuffer;
-        std::unique_ptr<IndexBuffer> m_IndexBuffer;
+        std::shared_ptr<Shader> m_Shader;
+        std::shared_ptr<VertexArray> m_VertexArray;
     private:
         static Application* s_Instance;
     };

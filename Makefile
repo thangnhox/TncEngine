@@ -36,7 +36,7 @@ setup:
 	touch bin/objectFiles/core/Application.o bin/objectFiles/core/Log.o bin/objectFiles/core/Window.o
 	touch bin/objectFiles/core/Layer.o bin/objectFiles/core/LayerStack.o bin/objectFiles/core/ImGuiLayer.o
 	touch bin/objectFiles/core/GLFWInput.o
-	touch bin/objectFiles/core/OpenGLContext.o bin/objectFiles/core/Shader.o bin/objectFiles/core/Buffer.o bin/objectFiles/core/OpenGLBuffer.o bin/objectFiles/core/Renderer.o
+	touch bin/objectFiles/core/OpenGLContext.o bin/objectFiles/core/Shader.o bin/objectFiles/core/Buffer.o bin/objectFiles/core/OpenGLBuffer.o bin/objectFiles/core/Renderer.o bin/objectFiles/core/VertexArray.o bin/objectFiles/core/OpenGLVertexArray.o
 	mkdir -p bin/objectFiles/glad
 	touch bin/objectFiles/glad/glad.o
 	mkdir -p bin/objectFiles/imgui
