@@ -11,11 +11,11 @@ namespace TncEngine {
     {
         switch(Renderer::GetAPI())
         {
-            case RendererAPI::None:     ASSERT_CORE(false, "RendererAPI:None is currently not supported"); return nullptr;
-            case RendererAPI::OpenGL:   return new OpenGLVertexBuffer(vertices, size);
+            case RendererAPI::API::None:     ASSERT_CORE(false, "RendererAPI::API:None is currently not supported"); return nullptr;
+            case RendererAPI::API::OpenGL:   return new OpenGLVertexBuffer(vertices, size);
         }
 
-        ASSERT_CORE(false, "Unknown RendererAPI");
+        ASSERT_CORE(false, "Unknown RendererAPI::API");
         return nullptr;
     }
 
@@ -23,11 +23,11 @@ namespace TncEngine {
     {
         switch(Renderer::GetAPI())
         {
-            case RendererAPI::None:     ASSERT_CORE(false, "RendererAPI:None is currently not supported"); return nullptr;
-            case RendererAPI::OpenGL:   return new OpenGLIndexBuffer(indices, size);
+            case RendererAPI::API::None:     ASSERT_CORE(false, "RendererAPI::API:None is currently not supported"); return nullptr;
+            case RendererAPI::API::OpenGL:   return new OpenGLIndexBuffer(indices, size);
         }
 
-        ASSERT_CORE(false, "Unknown RendererAPI");
+        ASSERT_CORE(false, "Unknown RendererAPI::API");
         return nullptr;
     }
 
