@@ -12,6 +12,7 @@
 #include <TncEngine/Renderer/Shader.hpp>
 #include <TncEngine/Renderer/Buffer.hpp>
 #include <TncEngine/Renderer/VertexArray.hpp>
+#include <TncEngine/Renderer/Camera.hpp>
 
 namespace TncEngine {
 
@@ -40,6 +41,8 @@ namespace TncEngine {
 
         std::shared_ptr<Shader> m_Shader;
         std::shared_ptr<VertexArray> m_VertexArray;
+
+        OrthographicCamera m_Camera;
     private:
         static Application* s_Instance;
     };

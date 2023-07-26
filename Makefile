@@ -44,7 +44,7 @@ setup:
 	touch bin/objectFiles/imgui/imgui_impl_opengl3.o bin/objectFiles/imgui/imgui_tables.o bin/objectFiles/imgui/imgui_demo.o bin/objectFiles/imgui/imgui_widgets.o bin/objectFiles/imgui/imgui.o bin/objectFiles/imgui/imgui_draw.o bin/objectFiles/imgui/imgui_impl_glfw.o
 
 core:
-	g++ $(LIB_BUILD) $(CPPFLAGS) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(CORE_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(TNC_DEBUG) -c $(shell find core/src/ -name '*.cpp')
+	g++ $(GDBFLAG) $(LIB_BUILD) $(CPPFLAGS) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(CORE_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(TNC_DEBUG) -c $(shell find core/src/ -name '*.cpp')
 	mv *.o bin/objectFiles/core/
 	ar src bin/lib/libTncEngineCore.a $(shell find bin/objectFiles/core/ -name '*.o')
 
@@ -52,14 +52,14 @@ core_PCH:
 	g++ $(CPPFLAGS) $(SPDLOG_INCLUDE) $(CORE_INCLUDE) core/src/TncPCH.hpp
 
 glad:
-	gcc $(CFLAGS) $(LIB_BUILD) $(GLAD_INCLUDE) -c $(shell find core/vendore/Glad/ -name '*.c')
+	gcc $(GDBFLAG) $(CFLAGS) $(LIB_BUILD) $(GLAD_INCLUDE) -c $(shell find core/vendore/Glad/ -name '*.c')
 	mv *.o bin/objectFiles/glad/
 	ar src bin/lib/libglad.a $(shell find bin/objectFiles/glad/ -name '*.o')
 
 imgui:
-	g++ $(CPPFLAGS) $(LIB_BUILD) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) -c $(shell find core/vendore/ImGUI/ -name '*.cpp')
+	g++ $(GDBFLAG) $(CPPFLAGS) $(LIB_BUILD) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) -c $(shell find core/vendore/ImGUI/ -name '*.cpp')
 	mv *.o bin/objectFiles/imgui/
 	ar src bin/lib/libimgui.a $(shell find bin/objectFiles/imgui/ -name '*.o')
 
 sandbox:
-	g++ $(CPPFLAGS) -Lbin/lib $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) -o bin/intermidiate/SandboxApp $(shell find sandbox/src/ -name '*.cpp') $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
+	g++ $(GDBFLAG) $(CPPFLAGS) -Lbin/lib $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) -o bin/intermidiate/SandboxApp $(shell find sandbox/src/ -name '*.cpp') $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
