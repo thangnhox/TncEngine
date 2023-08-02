@@ -2,7 +2,7 @@
 
 #include "RenderCommand.hpp"
 
-#include <TncEngine/Renderer/Camera.hpp>
+#include <TncEngine/Renderer/OrthographicCamera.hpp>
 #include <TncEngine/Renderer/Shader.hpp>
 
 namespace TncEngine {
