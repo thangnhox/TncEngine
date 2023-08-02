@@ -74,7 +74,6 @@ namespace TncEngine {
 
             void main()
             {
-                color = vec4(v_Position, 1.0);
                 color = v_Color;
             }
         )";
