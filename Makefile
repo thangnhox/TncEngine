@@ -27,40 +27,68 @@ GLM_INCLUDE = -Icore/vendore/glm
 # My include
 CORE_INCLUDE = -Icore/src
 
-.PHONY: core sandbox setup core_PCH test glad imgui
+.PHONY: core sandbox setup core_PCH
+
+# Makefile Variable
+SHELL = /bin/bash
+
+core_Srcs = $(shell find core/src/ -name '*.cpp')
+core_Objs = $(foreach file,$(patsubst %.cpp,%.o,$(notdir $(core_Srcs))),bin/objectFiles/core/$(file))
+core_Lib = bin/lib/libTncEngineCore.a
+glad_Srcs = $(shell find core/vendore/Glad/ -name '*.c')
+glad_Objs = $(foreach file,$(patsubst %.c,%.o,$(notdir $(glad_Srcs))),bin/objectFiles/glad/$(file))
+glad_Lib = bin/lib/libglad.a
+imgui_Srcs = $(shell find core/vendore/ImGUI/ -name '*.cpp')
+imgui_Objs = $(foreach file,$(patsubst %.cpp,%.o,$(notdir $(imgui_Srcs))),bin/objectFiles/imgui/$(file))
+imgui_Lib = bin/lib/libimgui.a
+
+sandbox_Exe = bin/intermidiate/SandboxApp
+
+glfw3_Lib = bin/lib/libglfw3.a
+binary_Folder = bin/intermidiate bin/submoduleBuild/GLFW bin/objectFiles/core bin/objectFiles/glad bin/objectFiles/imgui bin/lib
 
 # Make some empty object files in case find could not detect files in first compile
-setup:
-	mkdir -p bin/intermidiate bin/objectFiles/core bin/lib bin/submoduleBuild/GLFW
-	touch bin/objectFiles/core/Application.o bin/objectFiles/core/Log.o bin/objectFiles/core/Window.o
-	touch bin/objectFiles/core/Layer.o bin/objectFiles/core/LayerStack.o bin/objectFiles/core/ImGuiLayer.o
-	touch bin/objectFiles/core/GLFWInput.o
-	touch bin/objectFiles/core/OpenGLContext.o bin/objectFiles/core/Shader.o bin/objectFiles/core/Buffer.o bin/objectFiles/core/OpenGLBuffer.o bin/objectFiles/core/Renderer.o bin/objectFiles/core/VertexArray.o bin/objectFiles/core/OpenGLVertexArray.o
-	touch bin/objectFiles/core/OpenGLRendererAPI.o bin/objectFiles/core/RenderCommand.o bin/objectFiles/core/RendererAPI.o
-	mkdir -p bin/objectFiles/glad
-	touch bin/objectFiles/glad/glad.o
-	mkdir -p bin/objectFiles/imgui
-	touch bin/objectFiles/imgui/imgui_impl_opengl3.o bin/objectFiles/imgui/imgui_tables.o bin/objectFiles/imgui/imgui_demo.o bin/objectFiles/imgui/imgui_widgets.o bin/objectFiles/imgui/imgui.o bin/objectFiles/imgui/imgui_draw.o bin/objectFiles/imgui/imgui_impl_glfw.o
+setup: $(binary_Folder) $(glfw3_Lib) $(glad_Lib) $(imgui_Lib)
+	@echo setup done
+
+$(binary_Folder):
+	mkdir -p $@
+
+$(glfw3_Lib):
 	cmake -S core/vendore/GLFW -B bin/submoduleBuild/GLFW
 	cd bin/submoduleBuild/GLFW && $(MAKE) && cp src/libglfw3.a ../../lib/
 
-core:
-	g++ $(LIB_BUILD) $(CPPFLAGS) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(GLFW_INCLUDE) $(CORE_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(TNC_DEBUG) -c $(shell find core/src/ -name '*.cpp')
-	mv *.o bin/objectFiles/core/
-	ar src bin/lib/libTncEngineCore.a $(shell find bin/objectFiles/core/ -name '*.o')
+core: $(binary_Folder) $(glfw3_Lib) $(glad_Lib) $(imgui_Lib) $(core_Lib)
+	@echo done
 
 core_PCH:
 	g++ $(CPPFLAGS) $(SPDLOG_INCLUDE) $(CORE_INCLUDE) core/src/TncPCH.hpp
 
-glad:
-	gcc $(CFLAGS) $(LIB_BUILD) $(GLAD_INCLUDE) -c $(shell find core/vendore/Glad/ -name '*.c')
-	mv *.o bin/objectFiles/glad/
-	ar src bin/lib/libglad.a $(shell find bin/objectFiles/glad/ -name '*.o')
+sandbox: $(binary_Folder) $(sandbox_Exe)
+	gdb bin/intermidiate/SandboxApp
 
-imgui:
-	g++ $(CPPFLAGS) $(LIB_BUILD) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) -c $(shell find core/vendore/ImGUI/ -name '*.cpp')
-	mv *.o bin/objectFiles/imgui/
-	ar src bin/lib/libimgui.a $(shell find bin/objectFiles/imgui/ -name '*.o')
+$(glad_Lib):
+	@$(foreach file,$(glad_Srcs),\
+	echo "Compiling $(file)";\
+	gcc $(GDBFLAG) $(CFLAGS) $(LIB_BUILD) $(GLAD_INCLUDE) -c $(file) -o bin/objectFiles/glad/$(patsubst %.c,%.o,$(notdir $(file)));)
+	ar src $@ $(glad_Objs)
 
-sandbox:
-	g++ $(CPPFLAGS) -Lbin/lib $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(GLFW_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) -o bin/intermidiate/SandboxApp $(shell find sandbox/src/ -name '*.cpp') $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
+$(imgui_Lib):
+	@$(foreach file,$(imgui_Srcs),\
+	echo "Compiling $(file)";\
+	g++ $(GDBFLAG) $(CPPFLAGS) $(LIB_BUILD) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) -c $(file) -o bin/objectFiles/imgui/$(patsubst %.cpp,%.o,$(notdir $(file)));)
+	ar src $@ $(imgui_Objs)
+
+$(sandbox_Exe): $(glfw3_Lib) $(glad_Lib) $(imgui_Lib) $(core_Lib)
+	g++ $(GDBFLAG) $(CPPFLAGS) -Lbin/lib $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) -o $@ $(shell find sandbox/src/ -name '*.cpp') $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
+
+define build_CoreObjects
+bin/objectFiles/core/$$(patsubst %.cpp,%.o,$$(notdir $(1))): $(1)
+	g++ $$(GDBFLAG) $$(LIB_BUILD) $$(CPPFLAGS) $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(TNC_DEBUG) -c $$< -o $$@
+endef
+$(foreach src,$(core_Srcs),$(eval $(call build_CoreObjects,$(src))))
+
+$(core_Lib) : $(core_Objs)
+	ar src $@ $^
+
+
