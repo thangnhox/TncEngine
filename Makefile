@@ -26,7 +26,7 @@ GLM_INCLUDE = -Icore/vendore/glm
 # My include
 CORE_INCLUDE = -Icore/src
 
-.PHONY: core sandbox setup core_PCH test glad imgui
+.PHONY: core sandbox setup core_PCH test glad imgui setup_Termux_Remote_Desktop
 
 # Makefile Variable
 core_Srcs = $(shell find core/src/ -name '*.cpp')
@@ -43,15 +43,16 @@ sandbox_Srcs = $(shell find sandbox/src/ -name '*.cpp')
 sandbox_Exe = bin/intermidiate/SandboxApp
 
 binary_Folders = bin/intermidiate bin/objectFiles/core bin/lib bin/objectFiles/glad bin/objectFiles/imgui
+dependency_Packages = $$PREFIX/lib/libGL.so $$PREFIX/lib/libglfw.so
 
 # Make some empty object files in case find could not detect files in first compile
-setup: $(binary_Folders) init_Dependency_Packages $(glad_Lib) $(imgui_Lib)
+setup: $(binary_Folders) $(dependency_Packages) $(glad_Lib) $(imgui_Lib)
 	$(info setup done)
 
 $(binary_Folders):
 	mkdir -p $@
 
-init_Dependency_Packages:
+$(dependency_Packages):
 	pkg upgrade -y
 	pkg install mesa-dev glfw opengl -y
 
@@ -87,3 +88,17 @@ $(core_Lib): $(core_Objs)
 
 $(sandbox_Exe): $(glad_Lib) $(imgui_Lib) $(core_Lib) $(sandbox_Srcs)
 	g++ $(GDBFLAG) $(CPPFLAGS) $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) -o $@ $(sandbox_Srcs) -Lbin/lib $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
+
+setup_Termux_Remote_Desktop:
+	pkg update
+	pkg install x11-repo
+	pkg install xfce4 xfce4-goodies xfce4-whiskermenu-plugin xfce4-terminal tigervnc xrdp -y
+	sed -i 's/port=-1/port=5901/' $$PREFIX/etc/xrdp/xrdp.ini
+	echo "xrdp ; vncserver -geometry 1280x720 -listen tcp :1 ; env DISPLAY=:1 xfce4-session" >> $$PREFIX/bin/startxrdp
+	chmod +x $$PREFIX/bin/startxrdp
+	echo "xrdp -k ; vncserver -kill :1" >> $$PREFIX/bin/stopxrdp
+	chmod +x $$PREFIX/bin/stopxrdp
+	$(info setup remote desktop success!)
+	$(info start by command startxrdp)
+	$(info stop by command stopxrdp)
+	$(info connect via port 5901 on vncClient or port 3389 on rdp client)
