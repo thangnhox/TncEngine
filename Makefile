@@ -27,13 +27,14 @@ GLM_INCLUDE = -Icore/vendore/glm
 # My include
 CORE_INCLUDE = -Icore/src
 
-.PHONY: core sandbox setup core_PCH
+.PHONY: core sandbox setup core_PCH test
 
 # Makefile Variable
 SHELL = /bin/bash
 
 core_Srcs = $(shell find core/src/ -name '*.cpp')
 core_Objs = $(foreach file,$(patsubst %.cpp,%.o,$(notdir $(core_Srcs))),bin/objectFiles/core/$(file))
+core_Include = $(foreach file,$(patsubst %.cpp,%.include,$(notdir $(core_Srcs))),bin/includeList/core/$(file))
 core_Lib = bin/lib/libTncEngineCore.a
 glad_Srcs = $(shell find core/vendore/Glad/ -name '*.c')
 glad_Objs = $(foreach file,$(patsubst %.c,%.o,$(notdir $(glad_Srcs))),bin/objectFiles/glad/$(file))
@@ -46,7 +47,7 @@ sandbox_Srcs = $(shell find sandbox/src/ -name '*.cpp')
 sandbox_Exe = bin/intermidiate/SandboxApp
 
 glfw3_Lib = bin/lib/libglfw3.a
-binary_Folders = bin/intermidiate bin/submoduleBuild/GLFW bin/objectFiles/core bin/objectFiles/glad bin/objectFiles/imgui bin/lib
+binary_Folders = bin/intermidiate bin/submoduleBuild/GLFW bin/objectFiles/core bin/objectFiles/glad bin/objectFiles/imgui bin/lib bin/includeList/core
 
 # Make some empty object files in case find could not detect files in first compile
 setup: $(binary_Folders) $(glfw3_Lib) $(glad_Lib) $(imgui_Lib)
@@ -84,12 +85,25 @@ $(sandbox_Exe): $(glfw3_Lib) $(glad_Lib) $(imgui_Lib) $(core_Lib) $(sandbox_Srcs
 	g++ $(GDBFLAG) $(CPPFLAGS) -Lbin/lib $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) -o $@ $(sandbox_Srcs) $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
 
 define build_CoreObjects
-bin/objectFiles/core/$$(patsubst %.cpp,%.o,$$(notdir $(1))): $(1)
+bin/objectFiles/core/$$(patsubst %.cpp,%.o,$$(notdir $(1))): $(shell cat bin/includeList/core/$(patsubst %.cpp,%.include,$(notdir $(1))))
 	g++ $$(GDBFLAG) $$(LIB_BUILD) $$(CPPFLAGS) $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(TNC_DEBUG) -c $$< -o $$@
 endef
+
+# Generate user header list for specific Source file include every header inside vendore will update if source is modified
+# My opinion is if header is modified any source related to it need recompile
+# This will not be available on termux branch since I need more time to test it is really necessary or just check header file with the same name
+define gen_CoreIncludeList
+bin/includeList/core/$$(patsubst %.cpp,%.include,$$(notdir $(1))): $(1)
+	g++ -MM $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $(1) > $$(patsubst %.include,%.tmp,$$@)
+	cat $$(patsubst %.include,%.tmp,$$@) | sed 's/$$(patsubst %.cpp,%.o,$$(notdir $(1))): //g' | sed 's/\\//g' - > $$@
+	rm $$(patsubst %.include,%.tmp,$$@)
+endef
+
+$(core_Lib) : $(core_Include) $(core_Objs)
+	ar src $@ $(core_Objs)
+
+test: $(shell cat bin/includeList/core/Layer.include)
+	echo $^
+
+$(foreach src,$(core_Srcs),$(eval $(call gen_CoreIncludeList,$(src))))
 $(foreach src,$(core_Srcs),$(eval $(call build_CoreObjects,$(src))))
-
-$(core_Lib) : $(core_Objs)
-	ar src $@ $^
-
-
