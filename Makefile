@@ -52,11 +52,11 @@ setup: $(binary_Folders) $(dependency_Packages) $(glad_Lib) $(imgui_Lib)
 $(binary_Folders):
 	mkdir -p $@
 
-$(dependency_Packages):
+$(dependency_Packages) &:
 	pkg upgrade -y
 	pkg install mesa-dev glfw opengl -y
 
-core: $(binary_Folders) $(glad_Lib) $(imgui_Lib) $(core_Lib)
+core: $(binary_Folders) $(core_Lib)
 	@echo done
 
 core_PCH:

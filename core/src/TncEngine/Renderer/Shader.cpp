@@ -13,7 +13,6 @@ namespace TncEngine {
 
         // send vertex shader source to GL
         const GLchar* source = vertexSrc.c_str();
-        TncEngine_CORE_TRACE("Vertex Source:\n{0}", source);
         glShaderSource(vertexShader, 1, &source, 0);
 
         // compile vertex shader
@@ -37,14 +36,12 @@ namespace TncEngine {
             ASSERT_CORE(false, "Vertex shader compilation failure");
             return;
         }
-        TncEngine_CORE_INFO("Vertex shader compiled with ID: {0}", vertexShader);
 
         // Create an empty fragment shader handle
         GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
         // Send the fragment shader source code to GL
         source = fragmentSrc.c_str();
-        TncEngine_CORE_TRACE("Fragment Source:\n{0}", source);
         glShaderSource(fragmentShader, 1, &source, 0);
 
         // Compile the fragment shader
@@ -69,7 +66,6 @@ namespace TncEngine {
             ASSERT_CORE(false, "Fragment shader compilation failure");
             return;
         }
-        TncEngine_CORE_INFO("Fragment shader compiled with ID: {0}", fragmentShader);
 
         // Get a program object.
         m_RendererID = glCreateProgram();
@@ -99,11 +95,8 @@ namespace TncEngine {
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
 
-            if (infoLog.data())
-                TncEngine_CORE_ERROR("{0}", infoLog.data());
-            else
-                TncEngine_CORE_ERROR("No log recorded to this type of error");
-            ASSERT_CORE(false, "Shader linking failure");
+            TncEngine_CORE_ERROR("{0}", infoLog.data());
+            ASSERT_CORE(false, "Shader link failure!");
             return;
         }
 
