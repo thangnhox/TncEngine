@@ -18,7 +18,7 @@ namespace TncEngine {
     {
         shader->Bind();
         shader->UploadUniformMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
-
+        
         vertexArray->Bind();
         RenderCommand::DrawIndexed(vertexArray);
     }

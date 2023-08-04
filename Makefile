@@ -59,7 +59,7 @@ $(glfw3_Lib):
 	cmake -S core/vendore/GLFW -B bin/submoduleBuild/GLFW
 	cd bin/submoduleBuild/GLFW && $(MAKE) && cp src/libglfw3.a ../../lib/
 
-core: $(binary_Folders) $(glfw3_Lib) $(glad_Lib) $(imgui_Lib) $(core_Lib)
+core: $(binary_Folders) $(core_Lib)
 	@echo done
 
 core_PCH:
