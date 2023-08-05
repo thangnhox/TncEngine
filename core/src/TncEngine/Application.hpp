@@ -9,11 +9,6 @@
 
 #include <TncEngine/Layers/ImGuiLayer.hpp>
 
-#include <TncEngine/Renderer/Shader.hpp>
-#include <TncEngine/Renderer/Buffer.hpp>
-#include <TncEngine/Renderer/VertexArray.hpp>
-#include <TncEngine/Renderer/OrthographicCamera.hpp>
-
 namespace TncEngine {
 
     class TncEngine_API Application
@@ -38,6 +33,7 @@ namespace TncEngine {
         ImGuiLayer* m_ImGuiLayer;
         bool m_Running;
         LayerStack m_LayerStack;
+        float m_LastFrameTime = 0.0f;
     private:
         static Application* s_Instance;
     };

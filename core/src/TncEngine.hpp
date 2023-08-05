@@ -5,6 +5,8 @@
 #include "TncEngine/Layers/Layer.hpp"
 #include "TncEngine/Log.hpp"
 
+#include "TncEngine/Utils/Timestep.hpp"
+
 #include "TncEngine/Input/Input.hpp"
 #include "TncEngine/Input/KeyCodes.hpp"
 #include "TncEngine/Input/MouseButtonCodes.hpp"

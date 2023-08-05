@@ -2,6 +2,7 @@
 
 #include <TncEngine/Core.hpp>
 #include <TncEngine/Events/Event.hpp>
+#include <TncEngine/Utils/Timestep.hpp>
 
 namespace TncEngine {
 
@@ -13,7 +14,7 @@ namespace TncEngine {
 
         virtual void OnAttach() {}
         virtual void OnDetach() {}
-        virtual void OnUpdate() {}
+        virtual void OnUpdate(Timestep ts) {}
         virtual void OnImGuiRender() {}
         virtual void OnEvent(Event& event) {}
 
