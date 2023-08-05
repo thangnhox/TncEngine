@@ -31,6 +31,7 @@ CORE_INCLUDE = -Icore/src
 # Makefile Variable
 core_Srcs = $(shell find core/src/ -name '*.cpp')
 core_Objs = $(foreach file,$(patsubst %.cpp,%.o,$(notdir $(core_Srcs))),bin/objectFiles/core/$(file))
+core_Include = $(foreach file,$(patsubst %.cpp,%.include,$(notdir $(core_Srcs))),bin/includeList/core/$(file))
 core_Lib = bin/lib/libTncEngineCore.a
 glad_Srcs = $(shell find core/vendore/Glad/ -name '*.c')
 glad_Objs = $(foreach file,$(patsubst %.c,%.o,$(notdir $(glad_Srcs))),bin/objectFiles/glad/$(file))
@@ -42,7 +43,7 @@ imgui_Lib = bin/lib/libimgui.a
 sandbox_Srcs = $(shell find sandbox/src/ -name '*.cpp')
 sandbox_Exe = bin/intermidiate/SandboxApp
 
-binary_Folders = bin/intermidiate bin/objectFiles/core bin/lib bin/objectFiles/glad bin/objectFiles/imgui
+binary_Folders = bin/intermidiate bin/objectFiles/core bin/lib bin/objectFiles/glad bin/objectFiles/imgui bin/includeList/core
 dependency_Packages = $$PREFIX/lib/libGL.so $$PREFIX/lib/libglfw.so
 
 # Make some empty object files in case find could not detect files in first compile
@@ -78,13 +79,22 @@ sandbox: $(binary_Folders) $(sandbox_Exe)
 	gdb $(sandbox_Exe)
 
 define build_CoreObjects
-bin/objectFiles/core/$$(patsubst %.cpp,%.o,$$(notdir $(1))): $(1)
+bin/objectFiles/core/$$(patsubst %.cpp,%.o,$$(notdir $(1))): $(1) $(filter-out $(1),$(shell cat bin/includeList/core/$(patsubst %.cpp,%.include,$(notdir $(1))) 2>/dev/null))
 	g++ $$(GDBFLAG) $$(LIB_BUILD) $$(CPPFLAGS) $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(TNC_DEBUG) -c $$< -o $$@
 endef
+
+define gen_CoreIncludeList
+bin/includeList/core/$$(patsubst %.cpp,%.include,$$(notdir $(1))): $(1) bin/objectFiles/core/$(patsubst %.cpp,%.o,$(notdir $(1)))
+	g++ -MM $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $(1) > $$(patsubst %.include,%.tmp,$$@)
+	cat $$(patsubst %.include,%.tmp,$$@) | sed 's/$$(patsubst %.cpp,%.o,$$(notdir $(1))): //g' | sed 's/\\//g' - > $$@
+	rm $$(patsubst %.include,%.tmp,$$@)
+endef
+
+$(foreach src,$(core_Srcs),$(eval $(call gen_CoreIncludeList,$(src))))
 $(foreach src,$(core_Srcs),$(eval $(call build_CoreObjects,$(src))))
 
-$(core_Lib): $(core_Objs)
-	ar src $@ $^
+$(core_Lib): $(core_Include) $(core_Objs)
+	ar src $@ $(core_Objs)
 
 $(sandbox_Exe): $(glad_Lib) $(imgui_Lib) $(core_Lib) $(sandbox_Srcs)
 	g++ $(GDBFLAG) $(CPPFLAGS) $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) -o $@ $(sandbox_Srcs) -Lbin/lib $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
