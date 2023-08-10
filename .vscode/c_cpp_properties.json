@@ -11,10 +11,10 @@
                 "${workspaceFolder}/core/vendore/glm"
             ],
             "defines": ["TNC_DEBUG"],
-            "compilerPath": "/usr/bin/g++",
+            "compilerPath": "/data/data/com.termux/files/usr/bin/g++",
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "intelliSenseMode": "gcc-x64"
+            "intelliSenseMode": "linux-clang-arm64"
         }
     ],
     "version": 4

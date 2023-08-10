@@ -80,21 +80,24 @@ sandbox: $(binary_Folders) $(sandbox_Exe)
 
 define build_CoreObjects
 bin/objectFiles/core/$$(patsubst %.cpp,%.o,$$(notdir $(1))): $(1) $(filter-out $(1),$(shell cat bin/includeList/core/$(patsubst %.cpp,%.include,$(notdir $(1))) 2>/dev/null))
-	g++ $$(GDBFLAG) $$(LIB_BUILD) $$(CPPFLAGS) $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(TNC_DEBUG) -c $$< -o $$@
+	$$(info Compiling $(1))
+	@g++ $$(GDBFLAG) $$(LIB_BUILD) $$(CPPFLAGS) $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(TNC_DEBUG) -c $$< -o $$@
 endef
 
 define gen_CoreIncludeList
 bin/includeList/core/$$(patsubst %.cpp,%.include,$$(notdir $(1))): $(1) bin/objectFiles/core/$(patsubst %.cpp,%.o,$(notdir $(1)))
-	g++ -MM $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $(1) > $$(patsubst %.include,%.tmp,$$@)
-	cat $$(patsubst %.include,%.tmp,$$@) | sed 's/$$(patsubst %.cpp,%.o,$$(notdir $(1))): //g' | sed 's/\\//g' - > $$@
-	rm $$(patsubst %.include,%.tmp,$$@)
+	$$(info Generating $$@)
+	@g++ -MM $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $(1) > $$(patsubst %.include,%.tmp,$$@)
+	@cat $$(patsubst %.include,%.tmp,$$@) | sed 's/$$(patsubst %.cpp,%.o,$$(notdir $(1))): //g' | sed 's/\\//g' - > $$@
+	@rm $$(patsubst %.include,%.tmp,$$@)
 endef
 
 $(foreach src,$(core_Srcs),$(eval $(call gen_CoreIncludeList,$(src))))
 $(foreach src,$(core_Srcs),$(eval $(call build_CoreObjects,$(src))))
 
 $(core_Lib): $(core_Include) $(core_Objs)
-	ar src $@ $(core_Objs)
+	$(info Generating $(notdir $@))
+	@ar src $@ $(core_Objs)
 
 $(sandbox_Exe): $(glad_Lib) $(imgui_Lib) $(core_Lib) $(sandbox_Srcs)
 	g++ $(GDBFLAG) $(CPPFLAGS) $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) -o $@ $(sandbox_Srcs) -Lbin/lib $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
