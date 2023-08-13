@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "name": "Windows",
             "includePath": [
                 "${workspaceFolder}/core/src",
                 "${workspaceFolder}/core/vendore/spdlog/include",
@@ -12,7 +12,7 @@
                 "${workspaceFolder}/core/vendore/glm"
             ],
             "defines": ["TNC_DEBUG"],
-            "compilerPath": "/usr/bin/g++",
+            "compilerPath": "C:/Users/Admin/scoop/apps/gcc/current/bin/g++.exe",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x64",
