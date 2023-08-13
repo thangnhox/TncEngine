@@ -12,7 +12,7 @@
                 "${workspaceFolder}/core/vendore/glm"
             ],
             "defines": ["TNC_DEBUG"],
-            "compilerPath": "C:/Users/Admin/scoop/apps/gcc/current/bin/g++.exe",
+            "compilerPath": "~/scoop/apps/gcc/current/bin/g++.exe",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x64",
