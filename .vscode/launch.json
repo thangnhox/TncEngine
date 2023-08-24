@@ -9,7 +9,7 @@
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [],
-            "externalConsole": true,
+            "externalConsole": false,
             "preLaunchTask": "Sandbox Build",
             "MIMode": "gdb",
             "setupCommands": [

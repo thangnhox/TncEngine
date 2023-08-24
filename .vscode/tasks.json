@@ -4,6 +4,7 @@
         {
             "label": "Sandbox Build",
             "type": "shell",
+            "group": "build",
             "command": "make",
             "args": [
                 "bin/intermidiate/SandboxApp"
