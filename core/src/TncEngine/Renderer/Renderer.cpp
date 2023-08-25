@@ -1,6 +1,8 @@
 #include "TncPCH.hpp"
 #include "Renderer.hpp"
 
+#include <TncEngine/Renderer/OpenGLShader.hpp>
+
 namespace TncEngine {
 
     std::shared_ptr<Shader> Renderer::s_Shader = nullptr;
@@ -15,19 +17,19 @@ namespace TncEngine {
 
     void Renderer::Bind(const std::shared_ptr<Shader> &shader)
     {
-        s_Shader = shader;
         shader->Bind();
+        s_Shader = shader;
+    }
+
+    void Renderer::Submit(const std::string &name, const glm::mat4 &matrix)
+    {
+        std::dynamic_pointer_cast<OpenGLShader>(s_Shader)->UploadUniformMat4(name, matrix);
     }
 
     void Renderer::Submit(const std::shared_ptr<VertexArray> &vertexArray)
     {
         vertexArray->Bind();
         RenderCommand::DrawIndexed(vertexArray);
-    }
-
-    void Renderer::Submit(const std::string &name, const glm::mat4 &matrix)
-    {
-        s_Shader->UploadUniformMat4(name, matrix);
     }
 
 }

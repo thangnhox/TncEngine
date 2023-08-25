@@ -14,8 +14,8 @@ namespace TncEngine {
         static void EndScene();
 
         static void Bind(const std::shared_ptr<Shader>& shader);
+        static void Submit(const std::string& name, const glm::mat4& matrix = glm::mat4(1.0f));
         static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
-        static void Submit(const std::string& name, const glm::mat4& matrix);
 
         inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
     private:
