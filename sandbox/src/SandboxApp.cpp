@@ -104,9 +104,11 @@ public:
         m_Camera.SetPosition(m_CameraPosition);
         m_Camera.SetRotation(m_CameraRotation);
 
-        TncEngine::Renderer::BeginScene(m_Camera);
+        TncEngine::Renderer::BeginScene();
 
-        TncEngine::Renderer::Submit(m_Shader, m_VertexArray);
+        TncEngine::Renderer::Bind(m_Shader);
+        TncEngine::Renderer::Submit("u_ViewProjection", m_Camera.GetViewProjectionMatrix());
+        TncEngine::Renderer::Submit(m_VertexArray);
 
         TncEngine::Renderer::EndScene();
     }

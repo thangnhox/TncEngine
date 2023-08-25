@@ -6,7 +6,7 @@
             "type": "shell",
             "command": "make",
             "args": [
-                "bin/intermidiate/SandboxApp"
+                "bin/intermidiate/SandboxApp.exe"
             ],
             "group": "build"
         }

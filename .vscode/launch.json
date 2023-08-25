@@ -4,7 +4,7 @@
             "name": "Sandbox",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/bin/intermidiate/SandboxApp",
+            "program": "${workspaceRoot}/bin/intermidiate/SandboxApp.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",

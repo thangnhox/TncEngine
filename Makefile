@@ -43,7 +43,7 @@ imgui_Objs = $(foreach file,$(patsubst %.cpp,%.o,$(notdir $(imgui_Srcs))),bin/ob
 imgui_Lib = bin/lib/libimgui.a
 
 sandbox_Srcs = $(wildcard sandbox/src/*.cpp)
-sandbox_Exe = bin/intermidiate/SandboxApp
+sandbox_Exe = bin/intermidiate/SandboxApp.exe
 
 glfw3_Lib = bin/lib/libglfw3.a
 binary_Folders = bin/intermidiate bin/submoduleBuild/GLFW bin/objectFiles/core bin/objectFiles/glad bin/objectFiles/imgui bin/lib
@@ -82,8 +82,11 @@ $(imgui_Objs):
 $(sandbox_Exe): $(glfw3_Lib) $(glad_Lib) $(imgui_Lib) $(core_Lib) $(sandbox_Srcs)
 	g++ $(GDBFLAG) $(CPPFLAGS) -Lbin/lib $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(GLFW_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) -o $@ $(sandbox_Srcs) $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(IMGUI_FLAG) $(GL_FLAG) $(GDI_FLAG)
 
-$(core_Objs): $(core_Srcs)
-	g++ $(GDBFLAG) $(LIB_BUILD) $(CPPFLAGS) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(CORE_INCLUDE) $(GLFW_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(TNC_DEBUG) -c $(wildcard core/src/$(patsubst %.o,%.cpp,$(notdir $@))) $(wildcard core/src/**/$(patsubst %.o,%.cpp,$(notdir $@))) $(wildcard core/src/**/**/$(patsubst %.o,%.cpp,$(notdir $@))) -o $@
-
 $(core_Lib) : $(core_Objs)
 	ar src $@ $(core_Objs)
+
+bin/objectFiles/core/%.o: core/src/**/%.cpp core/src/**/%.hpp
+	g++ $(GDBFLAG) $(LIB_BUILD) $(CPPFLAGS) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(CORE_INCLUDE) $(GLFW_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(TNC_DEBUG) -c $< -o $@
+
+bin/objectFiles/core/%.o: core/src/**/**/%.cpp core/src/**/**/%.hpp
+	g++ $(GDBFLAG) $(LIB_BUILD) $(CPPFLAGS) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(CORE_INCLUDE) $(GLFW_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(TNC_DEBUG) -c $< -o $@

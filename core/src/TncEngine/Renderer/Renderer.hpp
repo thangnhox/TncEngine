@@ -10,19 +10,16 @@ namespace TncEngine {
     class Renderer
     {
     public:
-        static void BeginScene(OrthographicCamera& camera);
+        static void BeginScene();
         static void EndScene();
 
-        static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray);
+        static void Bind(const std::shared_ptr<Shader>& shader);
+        static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
+        static void Submit(const std::string& name, const glm::mat4& matrix);
 
         inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
     private:
-        struct SceneData
-        {
-            glm::mat4 ViewProjectionMatrix;
-        };
-
-        static SceneData* s_SceneData;
+        static std::shared_ptr<Shader> s_Shader;
     };
 
 }
