@@ -5,7 +5,7 @@
 
 namespace TncEngine {
 
-    std::shared_ptr<Shader> Renderer::s_Shader = nullptr;
+    Ref<Shader> Renderer::s_Shader = nullptr;
 
     void Renderer::BeginScene()
     {
@@ -15,7 +15,7 @@ namespace TncEngine {
     {
     }
 
-    void Renderer::Bind(const std::shared_ptr<Shader> &shader)
+    void Renderer::Bind(const Ref<Shader> &shader)
     {
         shader->Bind();
         s_Shader = shader;
@@ -26,7 +26,7 @@ namespace TncEngine {
         std::dynamic_pointer_cast<OpenGLShader>(s_Shader)->UploadUniformMat4(name, matrix);
     }
 
-    void Renderer::Submit(const std::shared_ptr<VertexArray> &vertexArray)
+    void Renderer::Submit(const Ref<VertexArray> &vertexArray)
     {
         vertexArray->Bind();
         RenderCommand::DrawIndexed(vertexArray);

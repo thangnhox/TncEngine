@@ -7,7 +7,7 @@
 
 namespace TncEngine {
 
-    class TncEngine_API LayerStack
+    class LayerStack
     {
     public:
         LayerStack();

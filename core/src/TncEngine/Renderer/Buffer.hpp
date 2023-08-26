@@ -22,6 +22,7 @@ namespace TncEngine {
             case ShaderDataType::Int3:          return 4 * 3;
             case ShaderDataType::Int4:          return 4 * 4;
             case ShaderDataType::Bool:          return 1;
+            case ShaderDataType::None:          break;
         }
 
         ASSERT_CORE(false, "Unsupported ShaderDataType!");
@@ -56,6 +57,7 @@ namespace TncEngine {
                 case ShaderDataType::Int3:          return 3;
                 case ShaderDataType::Int4:          return 4;
                 case ShaderDataType::Bool:          return 1;
+                case ShaderDataType::None:          break;
             }
 
             ASSERT_CORE(false, "Unsupported ShaderDataType!");

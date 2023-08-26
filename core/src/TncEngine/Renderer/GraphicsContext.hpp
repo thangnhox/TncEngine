@@ -7,7 +7,7 @@
 
 namespace TncEngine {
 
-    class TncEngine_API GraphicsContext
+    class GraphicsContext
     {
     public:
         virtual void Init() = 0;

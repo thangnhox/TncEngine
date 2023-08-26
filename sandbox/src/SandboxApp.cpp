@@ -42,8 +42,8 @@ public:
             -0.5f,  0.5f, -0.0f
         };
 
-        std::shared_ptr<TncEngine::VertexBuffer> vertexBuffer;
-        std::shared_ptr<TncEngine::VertexBuffer> squareVertexBuffer;
+        TncEngine::Ref<TncEngine::VertexBuffer> vertexBuffer;
+        TncEngine::Ref<TncEngine::VertexBuffer> squareVertexBuffer;
         vertexBuffer.reset(TncEngine::VertexBuffer::Create(vertices, sizeof(vertices)));
         squareVertexBuffer.reset(TncEngine::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 
@@ -59,12 +59,12 @@ public:
         m_SquareVertexArray->AddVertexBuffer(squareVertexBuffer);
 
         uint32_t indices[3] = { 0, 1, 2 };
-        std::shared_ptr<TncEngine::IndexBuffer> indexBuffer;
+        TncEngine::Ref<TncEngine::IndexBuffer> indexBuffer;
         indexBuffer.reset(TncEngine::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
         m_VertexArray->SetIndexBuffer(indexBuffer);
 
         uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-        std::shared_ptr<TncEngine::IndexBuffer> squareIndexBuffer;
+        TncEngine::Ref<TncEngine::IndexBuffer> squareIndexBuffer;
         squareIndexBuffer.reset(TncEngine::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
         m_SquareVertexArray->SetIndexBuffer(squareIndexBuffer);
 
@@ -208,10 +208,10 @@ public:
         ImGui::End();
     }
 private:
-    std::shared_ptr<TncEngine::Shader> m_Shader;
-    std::shared_ptr<TncEngine::Shader> m_SquareShader;
-    std::shared_ptr<TncEngine::VertexArray> m_VertexArray;
-    std::shared_ptr<TncEngine::VertexArray> m_SquareVertexArray;
+    TncEngine::Ref<TncEngine::Shader> m_Shader;
+    TncEngine::Ref<TncEngine::Shader> m_SquareShader;
+    TncEngine::Ref<TncEngine::VertexArray> m_VertexArray;
+    TncEngine::Ref<TncEngine::VertexArray> m_SquareVertexArray;
 
     TncEngine::OrthographicCamera m_Camera;
     glm::vec3 m_CameraPosition;
