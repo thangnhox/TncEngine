@@ -23,6 +23,7 @@ GLAD_INCLUDE = -Icore/vendore/Glad/include
 IMGUI_FRONTENDS_INCLUDE = -Icore/vendore/ImGUI/frontends
 IMGUI_BACKENDS_INCLUDE = -Icore/vendore/ImGUI/backends
 GLM_INCLUDE = -Icore/vendore/glm
+STB_INCLUDE = -Icore/vendore/stb_image
 
 # My include
 CORE_INCLUDE = -Icore/src
@@ -32,7 +33,7 @@ CORE_INCLUDE = -Icore/src
 # Makefile Variable
 SHELL = /bin/bash
 
-core_Srcs = $(shell find core/src/ -name '*.cpp')
+core_Srcs = $(shell find core/src/ -name '*.cpp') core/vendore/stb_image/stb_image.cpp
 core_Objs = $(foreach file,$(patsubst %.cpp,%.o,$(notdir $(core_Srcs))),bin/objectFiles/core/$(file))
 core_Include = $(foreach file,$(patsubst %.cpp,%.include,$(notdir $(core_Srcs))),bin/includeList/core/$(file))
 core_Lib = bin/lib/libTncEngineCore.a
@@ -82,12 +83,12 @@ $(imgui_Lib):
 	ar src $@ $(imgui_Objs)
 
 $(sandbox_Exe): $(glfw3_Lib) $(glad_Lib) $(imgui_Lib) $(core_Lib) $(sandbox_Srcs)
-	g++ $(GDBFLAG) $(CPPFLAGS) -Lbin/lib $(CORE_INCLUDE) $(GLFW_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) -o $@ $(sandbox_Srcs) $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
+	g++ $(GDBFLAG) $(CPPFLAGS) -Lbin/lib $(CORE_INCLUDE) $(GLFW_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(STB_INCLUDE) -o $@ $(sandbox_Srcs) $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
 
 define build_CoreObjects
 bin/objectFiles/core/$$(patsubst %.cpp,%.o,$$(notdir $(1))): $(1) $(filter-out $(1),$(shell cat bin/includeList/core/$(patsubst %.cpp,%.include,$(notdir $(1))) 2>/dev/null))
 	$$(info Compiling $(1))
-	@g++ $$(GDBFLAG) $$(LIB_BUILD) $$(CPPFLAGS) $$(GLFW_INCLUDE) $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(TNC_DEBUG) -c $$< -o $$@
+	@g++ $$(GDBFLAG) $$(LIB_BUILD) $$(CPPFLAGS) $$(GLFW_INCLUDE) $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(STB_INCLUDE) $$(TNC_DEBUG) -c $$< -o $$@
 endef
 
 # Generate user header list for specific Source file include every header inside vendore will update if source is modified
@@ -95,16 +96,14 @@ endef
 define gen_CoreIncludeList
 bin/includeList/core/$$(patsubst %.cpp,%.include,$$(notdir $(1))): $(1) bin/objectFiles/core/$(patsubst %.cpp,%.o,$(notdir $(1)))
 	$$(info Generating $$@)
-	@g++ -MM $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $(1) > $$(patsubst %.include,%.tmp,$$@)
+	@g++ -MM $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(STB_INCLUDE) $(1) > $$(patsubst %.include,%.tmp,$$@)
 	@cat $$(patsubst %.include,%.tmp,$$@) | sed 's/$$(patsubst %.cpp,%.o,$$(notdir $(1))): //g' | sed 's/\\//g' - > $$@
 	@rm $$(patsubst %.include,%.tmp,$$@)
 endef
 
 $(core_Lib) : $(core_Include) $(core_Objs)
-	ar src $@ $(core_Objs)
-
-test: $(shell cat bin/includeList/core/Layer.include)
-	echo $^
+	$(info Generating $@)
+	@ar src $@ $(core_Objs)
 
 $(foreach src,$(core_Srcs),$(eval $(call gen_CoreIncludeList,$(src))))
 $(foreach src,$(core_Srcs),$(eval $(call build_CoreObjects,$(src))))
