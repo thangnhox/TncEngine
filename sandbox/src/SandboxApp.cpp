@@ -172,7 +172,8 @@ public:
         m_SquareShader = TncEngine::Shader::Create(squareVertexSrc, squareFragmentSrc);
         m_TextureShader = TncEngine::Shader::Create(textureVertexSrc, textureFragmentSrc);
 
-        m_Texture = TncEngine::Texture2D::Create("sandbox/assets/textures/Checkerboard.png");
+        m_Checkerboard = TncEngine::Texture2D::Create("sandbox/assets/textures/Checkerboard.png");
+        m_ChernoLogo = TncEngine::Texture2D::Create("sandbox/assets/textures/ChernoLogo.png");
 
         TncEngine::Renderer::Bind(m_TextureShader);
         std::dynamic_pointer_cast<TncEngine::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
@@ -222,7 +223,13 @@ public:
             }
         }
 
-        m_Texture->Bind();
+        m_Checkerboard->Bind();
+        TncEngine::Renderer::Bind(m_TextureShader);
+        TncEngine::Renderer::Submit("u_ViewProjection", m_Camera.GetViewProjectionMatrix());
+        TncEngine::Renderer::Submit("u_Transform", glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+        TncEngine::Renderer::Submit(m_SquareVertexArray);
+
+        m_ChernoLogo->Bind();
         TncEngine::Renderer::Bind(m_TextureShader);
         TncEngine::Renderer::Submit("u_ViewProjection", m_Camera.GetViewProjectionMatrix());
         TncEngine::Renderer::Submit("u_Transform", glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
@@ -259,7 +266,7 @@ private:
     TncEngine::Ref<TncEngine::VertexArray> m_VertexArray;
     TncEngine::Ref<TncEngine::VertexArray> m_SquareVertexArray;
 
-    TncEngine::Ref<TncEngine::Texture2D> m_Texture;
+    TncEngine::Ref<TncEngine::Texture2D> m_Checkerboard, m_ChernoLogo;
 
     TncEngine::OrthographicCamera m_Camera;
     glm::vec3 m_CameraPosition;
