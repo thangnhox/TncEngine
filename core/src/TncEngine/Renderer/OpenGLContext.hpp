@@ -4,7 +4,7 @@
 
 namespace TncEngine {
 
-    class TncEngine_API OpenGLContext : public GraphicsContext
+    class OpenGLContext : public GraphicsContext
     {
     public:
         OpenGLContext(GLFWwindow* windowHandle);

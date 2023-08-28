@@ -1,14 +1,6 @@
 #pragma once
 
-#ifdef TNC_PLATFORM_WINDOWS
-    #ifdef TNC_BUILD_DLL
-        #define TncEngine_API __declspec(dllexport)
-    #else
-        #define TncEngine_API __declspec(dllimport)
-    #endif
-#else
-    #define TncEngine_API
-#endif
+#include <memory>
 
 #ifdef TNC_DEBUG
     #define ENABLE_ASSERT
@@ -25,3 +17,13 @@
 #define BIT(x) (1 << x)
 
 #define TNC_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+
+namespace TncEngine {
+
+    template<typename T>
+    using Scope = std::unique_ptr<T>;
+
+    template<typename T>
+    using Ref = std::shared_ptr<T>;
+
+}

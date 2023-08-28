@@ -26,6 +26,7 @@ GLAD_INCLUDE = -Icore/vendore/Glad/include
 IMGUI_FRONTENDS_INCLUDE = -Icore/vendore/ImGUI/frontends
 IMGUI_BACKENDS_INCLUDE = -Icore/vendore/ImGUI/backends
 GLM_INCLUDE = -Icore/vendore/glm
+STB_IMAGE_INCLUDE = -Icore/vendore/stb_image
 
 # My include
 CORE_INCLUDE = -Icore/src
@@ -33,7 +34,7 @@ CORE_INCLUDE = -Icore/src
 .PHONY: core sandbox setup core_PCH test glad imgui setup_Termux_Remote_Desktop
 
 # Makefile Variable
-core_Srcs = $(shell find core/src/ -name '*.cpp')
+core_Srcs = $(shell find core/src/ -name '*.cpp') core/vendore/stb_image/stb_image.cpp
 core_Objs = $(foreach file,$(patsubst %.cpp,%.o,$(notdir $(core_Srcs))),bin/objectFiles/core/$(file))
 core_Include = $(foreach file,$(patsubst %.cpp,%.include,$(notdir $(core_Srcs))),bin/includeList/core/$(file))
 core_Lib = bin/lib/libTncEngineCore.a
@@ -85,13 +86,13 @@ sandbox: $(binary_Folders) $(sandbox_Exe)
 define build_CoreObjects
 bin/objectFiles/core/$$(patsubst %.cpp,%.o,$$(notdir $(1))): $(1) $(filter-out $(1),$(shell cat bin/includeList/core/$(patsubst %.cpp,%.include,$(notdir $(1))) 2>/dev/null))
 	$$(info Compiling $(1))
-	@$(GPP) $$(GDBFLAG) $$(LIB_BUILD) $$(CPPFLAGS) $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(TNC_DEBUG) -c $$< -o $$@
+	@$(GPP) $$(GDBFLAG) $$(LIB_BUILD) $$(CPPFLAGS) $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(STB_IMAGE_INCLUDE) $$(TNC_DEBUG) -c $$< -o $$@
 endef
 
 define gen_CoreIncludeList
 bin/includeList/core/$$(patsubst %.cpp,%.include,$$(notdir $(1))): $(1) bin/objectFiles/core/$(patsubst %.cpp,%.o,$(notdir $(1)))
 	$$(info Generating $$@)
-	@$(GPP) -MM $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $(1) > $$(patsubst %.include,%.tmp,$$@)
+	@$(GPP) -MM $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(STB_IMAGE_INCLUDE) $(1) > $$(patsubst %.include,%.tmp,$$@)
 	@cat $$(patsubst %.include,%.tmp,$$@) | sed 's/$$(patsubst %.cpp,%.o,$$(notdir $(1))): //g' | sed 's/\\//g' - > $$@
 	@rm $$(patsubst %.include,%.tmp,$$@)
 endef
@@ -104,7 +105,7 @@ $(core_Lib): $(core_Include) $(core_Objs)
 	@ar src $@ $(core_Objs)
 
 $(sandbox_Exe): $(glad_Lib) $(imgui_Lib) $(core_Lib) $(sandbox_Srcs)
-	$(GPP) $(GDBFLAG) $(CPPFLAGS) $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) -o $@ $(sandbox_Srcs) -Lbin/lib $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
+	$(GPP) $(GDBFLAG) $(CPPFLAGS) $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(STB_IMAGE_INCLUDE) -o $@ $(sandbox_Srcs) -Lbin/lib $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
 
 # Note: Must run inside termux environmen not Proot-Distro
 setup_Termux_Remote_Desktop:
