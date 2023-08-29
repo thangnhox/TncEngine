@@ -9,7 +9,8 @@
                 "${workspaceFolder}/core/vendore/Glad/include",
                 "${workspaceFolder}/core/vendore/ImGUI/backends",
                 "${workspaceFolder}/core/vendore/ImGUI/frontends",
-                "${workspaceFolder}/core/vendore/glm"
+                "${workspaceFolder}/core/vendore/glm",
+                "${workspaceFolder}/core/vendore/stb_image"
             ],
             "defines": ["TNC_DEBUG"],
             "compilerPath": "~/scoop/apps/gcc/current/bin/g++.exe",

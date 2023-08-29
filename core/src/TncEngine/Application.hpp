@@ -11,7 +11,7 @@
 
 namespace TncEngine {
 
-    class TncEngine_API Application
+    class Application
     {
     public:
         Application();

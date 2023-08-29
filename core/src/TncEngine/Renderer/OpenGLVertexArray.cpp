@@ -20,6 +20,7 @@ namespace TncEngine {
             case ShaderDataType::Int3:          return GL_INT;
             case ShaderDataType::Int4:          return GL_INT;
             case ShaderDataType::Bool:          return GL_BOOL;
+            case ShaderDataType::None:          break;
         }
 
         ASSERT_CORE(false, "Unsupported ShaderDataType!");
@@ -46,7 +47,7 @@ namespace TncEngine {
         glBindVertexArray(0);
     }
 
-    void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer> &vertexBuffer)
+    void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer> &vertexBuffer)
     {
         ASSERT_CORE(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
@@ -72,7 +73,7 @@ namespace TncEngine {
         m_VertexArray.push_back(vertexBuffer);
     }
 
-    void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer> &indexBuffer)
+    void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer> &indexBuffer)
     {
         glBindVertexArray(m_ArrayID);
         indexBuffer->Bind();

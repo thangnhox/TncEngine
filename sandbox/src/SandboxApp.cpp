@@ -26,26 +26,26 @@ public:
     ExampleLayer()
         : Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f), m_CameraPosition(0.0f)
     {
-        m_VertexArray.reset(TncEngine::VertexArray::Create());
-        m_SquareVertexArray.reset(TncEngine::VertexArray::Create());
+        m_VertexArray = TncEngine::VertexArray::Create();
+        m_SquareVertexArray = TncEngine::VertexArray::Create();
 
-        float vertices[3 * 7] = {
+        float vertices[] = {
             -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
              0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
              0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
         };
 
-        float squareVertices[3 * 4] = {
-            -0.5f, -0.5f, -0.0f,
-             0.5f, -0.5f, -0.0f,
-             0.5f,  0.5f, -0.0f,
-            -0.5f,  0.5f, -0.0f
+        float squareVertices[] = {
+            -0.5f, -0.5f, -0.0f, 0.0f, 0.0f,
+             0.5f, -0.5f, -0.0f, 1.0f, 0.0f,
+             0.5f,  0.5f, -0.0f, 1.0f, 1.0f,
+            -0.5f,  0.5f, -0.0f, 0.0f, 1.0f
         };
 
-        std::shared_ptr<TncEngine::VertexBuffer> vertexBuffer;
-        std::shared_ptr<TncEngine::VertexBuffer> squareVertexBuffer;
-        vertexBuffer.reset(TncEngine::VertexBuffer::Create(vertices, sizeof(vertices)));
-        squareVertexBuffer.reset(TncEngine::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+        TncEngine::Ref<TncEngine::VertexBuffer> vertexBuffer;
+        TncEngine::Ref<TncEngine::VertexBuffer> squareVertexBuffer;
+        vertexBuffer = TncEngine::VertexBuffer::Create(vertices, sizeof(vertices));
+        squareVertexBuffer = TncEngine::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
 
         vertexBuffer->SetLayout({
             { TncEngine::ShaderDataType::Float3, "a_Position" },
@@ -54,18 +54,19 @@ public:
         m_VertexArray->AddVertexBuffer(vertexBuffer);
 
         squareVertexBuffer->SetLayout({
-            { TncEngine::ShaderDataType::Float3, "a_Position"}
+            { TncEngine::ShaderDataType::Float3, "a_Position"},
+            { TncEngine::ShaderDataType::Float2, "a_TexCoord"}
         });
         m_SquareVertexArray->AddVertexBuffer(squareVertexBuffer);
 
         uint32_t indices[3] = { 0, 1, 2 };
-        std::shared_ptr<TncEngine::IndexBuffer> indexBuffer;
-        indexBuffer.reset(TncEngine::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+        TncEngine::Ref<TncEngine::IndexBuffer> indexBuffer;
+        indexBuffer = TncEngine::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
         m_VertexArray->SetIndexBuffer(indexBuffer);
 
         uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-        std::shared_ptr<TncEngine::IndexBuffer> squareIndexBuffer;
-        squareIndexBuffer.reset(TncEngine::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+        TncEngine::Ref<TncEngine::IndexBuffer> squareIndexBuffer;
+        squareIndexBuffer = TncEngine::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
         m_SquareVertexArray->SetIndexBuffer(squareIndexBuffer);
 
         std::string vertexSrc = R"(
@@ -134,8 +135,48 @@ public:
             }
         )";
 
-        m_Shader.reset(TncEngine::Shader::Create(vertexSrc, fragmentSrc));
-        m_SquareShader.reset(TncEngine::Shader::Create(squareVertexSrc, squareFragmentSrc));
+        std::string textureVertexSrc = R"(
+            #version 330 core
+
+            layout(location = 0) in vec3 a_Position;
+            layout(location = 1) in vec2 a_TexCoord;
+
+            uniform mat4 u_ViewProjection;
+            uniform mat4 u_Transform;
+
+            out vec2 v_TexCoord;
+
+            void main()
+            {
+                v_TexCoord = a_TexCoord;
+                gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+            }
+        )";
+
+        std::string textureFragmentSrc = R"(
+            #version 330 core
+
+            layout(location = 0) out vec4 color;
+
+            in vec2 v_TexCoord;
+
+            uniform sampler2D u_Texture;
+
+            void main()
+            {
+                color = texture(u_Texture, v_TexCoord);
+            }
+        )";
+
+        m_Shader = TncEngine::Shader::Create(vertexSrc, fragmentSrc);
+        m_SquareShader = TncEngine::Shader::Create(squareVertexSrc, squareFragmentSrc);
+        m_TextureShader = TncEngine::Shader::Create(textureVertexSrc, textureFragmentSrc);
+
+        m_Checkerboard = TncEngine::Texture2D::Create("sandbox/assets/textures/Checkerboard.png");
+        m_ChernoLogo = TncEngine::Texture2D::Create("sandbox/assets/textures/ChernoLogo.png");
+
+        TncEngine::Renderer::Bind(m_TextureShader);
+        std::dynamic_pointer_cast<TncEngine::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
     }
 
     void OnUpdate(TncEngine::Timestep ts) override
@@ -182,10 +223,22 @@ public:
             }
         }
 
-        TncEngine::Renderer::Bind(m_Shader);
+        m_Checkerboard->Bind();
+        TncEngine::Renderer::Bind(m_TextureShader);
         TncEngine::Renderer::Submit("u_ViewProjection", m_Camera.GetViewProjectionMatrix());
-        TncEngine::Renderer::Submit("u_Transform");
-        TncEngine::Renderer::Submit(m_VertexArray);
+        TncEngine::Renderer::Submit("u_Transform", glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+        TncEngine::Renderer::Submit(m_SquareVertexArray);
+
+        m_ChernoLogo->Bind();
+        TncEngine::Renderer::Bind(m_TextureShader);
+        TncEngine::Renderer::Submit("u_ViewProjection", m_Camera.GetViewProjectionMatrix());
+        TncEngine::Renderer::Submit("u_Transform", glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+        TncEngine::Renderer::Submit(m_SquareVertexArray);
+
+        // TncEngine::Renderer::Bind(m_Shader);
+        // TncEngine::Renderer::Submit("u_ViewProjection", m_Camera.GetViewProjectionMatrix());
+        // TncEngine::Renderer::Submit("u_Transform");
+        // TncEngine::Renderer::Submit(m_VertexArray);
 
         TncEngine::Renderer::EndScene();
     }
@@ -208,10 +261,12 @@ public:
         ImGui::End();
     }
 private:
-    std::shared_ptr<TncEngine::Shader> m_Shader;
-    std::shared_ptr<TncEngine::Shader> m_SquareShader;
-    std::shared_ptr<TncEngine::VertexArray> m_VertexArray;
-    std::shared_ptr<TncEngine::VertexArray> m_SquareVertexArray;
+    TncEngine::Ref<TncEngine::Shader> m_Shader;
+    TncEngine::Ref<TncEngine::Shader> m_SquareShader, m_TextureShader;
+    TncEngine::Ref<TncEngine::VertexArray> m_VertexArray;
+    TncEngine::Ref<TncEngine::VertexArray> m_SquareVertexArray;
+
+    TncEngine::Ref<TncEngine::Texture2D> m_Checkerboard, m_ChernoLogo;
 
     TncEngine::OrthographicCamera m_Camera;
     glm::vec3 m_CameraPosition;

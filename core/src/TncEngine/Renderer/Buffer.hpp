@@ -1,5 +1,7 @@
 #pragma once
 
+#include <TncEngine/Core.hpp>
+
 namespace TncEngine {
 
     enum class ShaderDataType
@@ -22,6 +24,7 @@ namespace TncEngine {
             case ShaderDataType::Int3:          return 4 * 3;
             case ShaderDataType::Int4:          return 4 * 4;
             case ShaderDataType::Bool:          return 1;
+            case ShaderDataType::None:          break;
         }
 
         ASSERT_CORE(false, "Unsupported ShaderDataType!");
@@ -56,6 +59,7 @@ namespace TncEngine {
                 case ShaderDataType::Int3:          return 3;
                 case ShaderDataType::Int4:          return 4;
                 case ShaderDataType::Bool:          return 1;
+                case ShaderDataType::None:          break;
             }
 
             ASSERT_CORE(false, "Unsupported ShaderDataType!");
@@ -108,7 +112,7 @@ namespace TncEngine {
         virtual const BufferLayout& GetLayout() const = 0;
         virtual void SetLayout(const BufferLayout& layout) = 0;
 
-        static VertexBuffer* Create(float* vertices, uint32_t size);
+        static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
     };
 
     class IndexBuffer
@@ -121,7 +125,7 @@ namespace TncEngine {
 
         virtual uint32_t GetCount() const = 0;
 
-        static IndexBuffer* Create(uint32_t* indices, uint32_t size);
+        static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t size);
     };
 
 }

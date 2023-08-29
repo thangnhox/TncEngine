@@ -6,7 +6,7 @@
 
 namespace TncEngine {
 
-    class TncEngine_API WindowResizeEvent : public Event
+    class WindowResizeEvent : public Event
     {
     public:
         WindowResizeEvent(uint32_t width, uint32_t height)
@@ -28,7 +28,7 @@ namespace TncEngine {
         uint32_t m_Width, m_Height;
     };
 
-    class TncEngine_API WindowClosedEvent : public Event
+    class WindowClosedEvent : public Event
     {
     public:
         WindowClosedEvent() {}
@@ -37,7 +37,7 @@ namespace TncEngine {
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 
-    class TncEngine_API AppTickEvent : public Event
+    class AppTickEvent : public Event
     {
     public:
         AppTickEvent() {}
@@ -46,7 +46,7 @@ namespace TncEngine {
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 
-    class TncEngine_API AppUpdateEvent : public Event
+    class AppUpdateEvent : public Event
     {
     public:
         AppUpdateEvent() {}
@@ -55,7 +55,7 @@ namespace TncEngine {
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 
-    class TncEngine_API AppRenderEvent : public Event
+    class AppRenderEvent : public Event
     {
     public:
         AppRenderEvent() {}
