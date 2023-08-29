@@ -85,8 +85,10 @@ $(sandbox_Exe): $(glfw3_Lib) $(glad_Lib) $(imgui_Lib) $(core_Lib) $(sandbox_Srcs
 $(core_Lib) : $(core_Objs)
 	ar src $@ $(core_Objs)
 
-bin/objectFiles/core/%.o: core/src/**/%.cpp core/src/**/%.hpp
-	g++ $(GDBFLAG) $(LIB_BUILD) $(CPPFLAGS) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(CORE_INCLUDE) $(GLFW_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(TNC_DEBUG) -c $< -o $@
+define CORE_COMPILE
+bin/objectFiles/core/$$(patsubst %.cpp,%.o,$$(notdir $(1))) : $(1) $(patsubst %.cpp,%.hpp,$(1))
+	$$(info $$(notdir $(1)))
+	@g++ $$(GDBFLAG) $$(LIB_BUILD) $$(CPPFLAGS) $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(GLFW_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(TNC_DEBUG) -c $$< -o $$@
+endef
 
-bin/objectFiles/core/%.o: core/src/**/**/%.cpp core/src/**/**/%.hpp
-	g++ $(GDBFLAG) $(LIB_BUILD) $(CPPFLAGS) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(CORE_INCLUDE) $(GLFW_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(TNC_DEBUG) -c $< -o $@
+$(foreach src,$(core_Srcs),$(eval $(call CORE_COMPILE,$(src))))
