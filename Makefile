@@ -81,10 +81,12 @@ $(imgui_Objs):
 	g++ $(GDBFLAG) $(CPPFLAGS) $(LIB_BUILD) $(GLFW_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) -c $(wildcard core/vendore/ImGUI/**/$(patsubst %.o,%.cpp,$(notdir $@))) -o $@
 
 $(sandbox_Exe): $(glfw3_Lib) $(glad_Lib) $(imgui_Lib) $(core_Lib) $(sandbox_Srcs)
-	g++ $(GDBFLAG) $(CPPFLAGS) -Lbin/lib $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(GLFW_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(STB_IMAGE_INCLUDE) -o $@ $(sandbox_Srcs) $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(IMGUI_FLAG) $(GL_FLAG) $(GDI_FLAG)
+	$(info $(notdir $@))
+	@g++ $(GDBFLAG) $(CPPFLAGS) -Lbin/lib $(CORE_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(GLFW_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(STB_IMAGE_INCLUDE) -o $@ $(sandbox_Srcs) $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(IMGUI_FLAG) $(GL_FLAG) $(GDI_FLAG)
 
 $(core_Lib) : $(core_Objs)
-	ar src $@ $(core_Objs)
+	$(info $(notdir $@))
+	@ar src $@ $(core_Objs)
 
 define CORE_COMPILE
 bin/objectFiles/core/$$(patsubst %.cpp,%.o,$$(notdir $(1))) : $(1) $(patsubst %.cpp,%.hpp,$(1))

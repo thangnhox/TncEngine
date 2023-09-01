@@ -4,18 +4,20 @@
 
 #include <glm/glm.hpp>
 
-#include <unordered_map>
-
 namespace TncEngine {
 
     class OpenGLShader : public Shader
     {
     public:
         OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc);
+        OpenGLShader(const std::string& sourcePath);
         ~OpenGLShader() override;
 
         void Bind() const override;
         void Unbind() const override;
+
+        void LoadFile(bool compile = false) override;
+        void Compile() override;
 
         void UploadUniformFloat4(const std::string& name, const glm::vec4& value);
         void UploadUniformFloat3(const std::string& name, const glm::vec3& value);
@@ -28,7 +30,6 @@ namespace TncEngine {
     private:
         int GetUniformLocation(const std::string name) const;
     private:
-        uint32_t m_RendererID;
         mutable std::unordered_map<std::string, int> m_UniformLocationCache;
     };
 
