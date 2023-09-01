@@ -67,7 +67,14 @@ namespace TncEngine {
 
     void OpenGLShader::Compile()
     {
-        std::vector<GLuint> shaderIDs(p_Sources.size());
+        if (p_Sources.empty())
+        {
+            TncEngine_CORE_ERROR("This Shader instance [{0}] has no source!", fmt::ptr(this));
+            return;
+        }
+
+        std::vector<GLuint> shaderIDs;
+        shaderIDs.reserve(p_Sources.size());
 
         // Get a program object.
         GLuint program = glCreateProgram();
@@ -76,7 +83,11 @@ namespace TncEngine {
         {
             GLenum type = ShaderTypeFromString(kv.first);
 
-            if (!type) continue;
+            if (!type)
+            {
+                TncEngine_CORE_ERROR("Invalid shader type '{0}'", kv.first);
+                continue;
+            }
 
             GLuint shader = glCreateShader(type);
             shaderIDs.push_back(shader);
@@ -107,6 +118,12 @@ namespace TncEngine {
                 return;
             }
             glAttachShader(program, shader);
+        }
+
+        if (shaderIDs.empty())
+        {
+            TncEngine_CORE_ERROR("This Shader instance [{0}] has no valid source type found!", fmt::ptr(this));
+            return;
         }
 
         // Link our program
