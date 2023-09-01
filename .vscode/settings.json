@@ -65,7 +65,8 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp",
-        "glad.h": "c"
+        "glad.h": "c",
+        "unordered_set": "cpp"
     },
     "cmake.configureOnOpen": false
 }
