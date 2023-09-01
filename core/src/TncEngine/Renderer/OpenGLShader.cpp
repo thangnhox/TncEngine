@@ -59,6 +59,7 @@ namespace TncEngine {
             return;
         }
         std::string source = StringUtils::LoadFile(p_SourcePath);
+        if (source.empty()) return;
         p_Sources = StringUtils::SplitString("#type", source);
 
         if (compile) Compile();

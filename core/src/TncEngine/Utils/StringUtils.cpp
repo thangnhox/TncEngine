@@ -13,7 +13,7 @@ namespace TncEngine {
         std::ifstream in(filepath, std::ios::in | std::ios::binary);
         if (!in)
         {
-            TncEngine_CORE_ERROR("Could not open file '{0}", filepath);
+            TncEngine_CORE_ERROR("Could not open file '{0}'", filepath);
             return result;
         }
         in.seekg(0, std::ios::end);
