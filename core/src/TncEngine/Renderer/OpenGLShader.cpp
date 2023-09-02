@@ -4,96 +4,148 @@
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <TncEngine/Utils/StringUtils.hpp>
+
 namespace TncEngine {
+
+    GLenum ShaderTypeFromString(const std::string& type)
+    {
+        if (type == "vert")
+            return GL_VERTEX_SHADER;
+        if (type == "frag")
+            return GL_FRAGMENT_SHADER;
+
+        ASSERT_CORE(false, "Invalid Shader type " + type);
+        return GL_NONE;
+    }
 
     OpenGLShader::OpenGLShader(const std::string &vertexSrc, const std::string &fragmentSrc)
     {
-        // create empty vertex shader handle
-        GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        p_RendererID = 0;
+        p_SourcePath.clear();
+        p_Sources["vert"] = vertexSrc;
+        p_Sources["frag"] = fragmentSrc;
+        Compile();
+    }
 
-        // send vertex shader source to GL
-        const GLchar* source = vertexSrc.c_str();
-        glShaderSource(vertexShader, 1, &source, 0);
+    OpenGLShader::OpenGLShader(const std::string &sourcePath)
+    {
+        p_RendererID = 0;
+        p_SourcePath = sourcePath;
+        LoadFile();
+        Compile();
+    }
 
-        // compile vertex shader
-        glCompileShader(vertexShader);
+    OpenGLShader::~OpenGLShader()
+    {
+        glDeleteProgram(p_RendererID);
+    }
 
-        int isCompiled = 0;
-        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-        if(isCompiled == GL_FALSE)
+    void OpenGLShader::Bind() const
+    {
+        glUseProgram(p_RendererID);
+    }
+
+    void OpenGLShader::Unbind() const
+    {
+        glUseProgram(0);
+    }
+
+    void OpenGLShader::LoadFile(bool compile)
+    {
+        if (p_SourcePath.empty())
         {
-            GLint maxLength = 0;
-            glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
+            ASSERT_CORE(false, "This Shader instance [{0}] doesn't init with file path", fmt::ptr(this));
+            return;
+        }
+        std::string source = StringUtils::LoadFile(p_SourcePath);
+        if (source.empty()) return;
+        p_Sources = StringUtils::SplitString("#type", source);
 
-            // The maxLength includes the NULL character
-            std::vector<GLchar> infoLog(maxLength);
-            glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
-            
-            // We don't need the shader anymore.
-            glDeleteShader(vertexShader);
+        if (compile) Compile();
+    }
 
-            TncEngine_CORE_ERROR("{0}", infoLog.data());
-            ASSERT_CORE(false, "Vertex shader compilation failure");
+    void OpenGLShader::Compile()
+    {
+        if (p_Sources.empty())
+        {
+            TncEngine_CORE_ERROR("This Shader instance [{0}] has no source!", fmt::ptr(this));
             return;
         }
 
-        // Create an empty fragment shader handle
-        GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-        // Send the fragment shader source code to GL
-        source = fragmentSrc.c_str();
-        glShaderSource(fragmentShader, 1, &source, 0);
-
-        // Compile the fragment shader
-        glCompileShader(fragmentShader);
-
-        glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
-        if (isCompiled == GL_FALSE)
-        {
-            GLint maxLength = 0;
-            glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-            // The maxLength includes the NULL character
-            std::vector<GLchar> infoLog(maxLength);
-            glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
-            
-            // We don't need the shader anymore.
-            glDeleteShader(fragmentShader);
-            // Either of them. Don't leak shaders.
-            glDeleteShader(vertexShader);
-
-            TncEngine_CORE_ERROR("{0}", infoLog.data());
-            ASSERT_CORE(false, "Fragment shader compilation failure");
-            return;
-        }
+        std::vector<GLuint> shaderIDs;
+        shaderIDs.reserve(p_Sources.size());
 
         // Get a program object.
-        m_RendererID = glCreateProgram();
+        GLuint program = glCreateProgram();
 
-        // Attach our shaders to our program
-        glAttachShader(m_RendererID, vertexShader);
-        glAttachShader(m_RendererID, fragmentShader);
+        for (auto& kv : p_Sources)
+        {
+            GLenum type = ShaderTypeFromString(kv.first);
+
+            if (!type)
+            {
+                TncEngine_CORE_ERROR("Invalid shader type '{0}'", kv.first);
+                continue;
+            }
+
+            GLuint shader = glCreateShader(type);
+            shaderIDs.push_back(shader);
+
+            const GLchar* source = kv.second.c_str();
+            glShaderSource(shader, 1, &source, 0);
+
+            // compile vertex shader
+            glCompileShader(shader);
+
+            int isCompiled = 0;
+            glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+            if(isCompiled == GL_FALSE)
+            {
+                GLint maxLength = 0;
+                glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+
+                // The maxLength includes the NULL character
+                std::vector<GLchar> infoLog(maxLength);
+                glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+                
+                // We don't need the shader anymore.
+                for (auto id : shaderIDs)
+                    glDeleteShader(id);
+
+                TncEngine_CORE_ERROR("{0}", infoLog.data());
+                ASSERT_CORE(false, kv.first + " shader compilation failure");
+                return;
+            }
+            glAttachShader(program, shader);
+        }
+
+        if (shaderIDs.empty())
+        {
+            TncEngine_CORE_ERROR("This Shader instance [{0}] has no valid source type found!", fmt::ptr(this));
+            return;
+        }
 
         // Link our program
-        glLinkProgram(m_RendererID);
+        glLinkProgram(program);
 
         // Check linking
         GLint isLinked = 0;
-        glGetProgramiv(m_RendererID, GL_LINK_STATUS, (int*)&isLinked);
+        glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
         if (isLinked == GL_FALSE)
         {
             GLint maxLength = 0;
-            glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &maxLength);
+            glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
             // The maxLength includes the NULL character
             std::vector<GLchar> infoLog(maxLength);
-            glGetProgramInfoLog(m_RendererID, maxLength, &maxLength, &infoLog[0]);
+            glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
             
             // We don't need the program anymore.
-            glDeleteProgram(m_RendererID);
+            glDeleteProgram(program);
             // Don't leak shaders either.
-            glDeleteShader(vertexShader);
-            glDeleteShader(fragmentShader);
+            for (auto id : shaderIDs)
+                glDeleteShader(id);
 
             TncEngine_CORE_ERROR("{0}", infoLog.data());
             ASSERT_CORE(false, "Shader link failure!");
@@ -101,23 +153,15 @@ namespace TncEngine {
         }
 
         // Always detach shaders after a successful link.
-        glDetachShader(m_RendererID, vertexShader);
-        glDetachShader(m_RendererID, fragmentShader);
-    }
+        for (auto id : shaderIDs)
+            glDetachShader(program, id);
 
-    OpenGLShader::~OpenGLShader()
-    {
-        glDeleteProgram(m_RendererID);
-    }
-
-    void OpenGLShader::Bind() const
-    {
-        glUseProgram(m_RendererID);
-    }
-
-    void OpenGLShader::Unbind() const
-    {
-        glUseProgram(0);
+        // Delete Existing program for this instance
+        if (p_RendererID)
+        {
+            glDeleteProgram(p_RendererID);
+        }
+        p_RendererID = program;
     }
 
     void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4 &matrix)
@@ -133,7 +177,7 @@ namespace TncEngine {
     int OpenGLShader::GetUniformLocation(const std::string name) const
     {
         if (m_UniformLocationCache.find(name) == m_UniformLocationCache.end())
-            m_UniformLocationCache[name] = glGetUniformLocation(m_RendererID, name.c_str());
+            m_UniformLocationCache[name] = glGetUniformLocation(p_RendererID, name.c_str());
         return m_UniformLocationCache[name];
     }
 
