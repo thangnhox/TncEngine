@@ -55,7 +55,7 @@ namespace TncEngine {
     {
         if (p_SourcePath.empty())
         {
-            ASSERT_CORE(false, "This Shader instance doesn't init with file path");
+            ASSERT_CORE(false, "This Shader instance [{0}] doesn't init with file path", fmt::ptr(this));
             return;
         }
         std::string source = StringUtils::LoadFile(p_SourcePath);
