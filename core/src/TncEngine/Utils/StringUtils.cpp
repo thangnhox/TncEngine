@@ -34,9 +34,9 @@ namespace TncEngine {
         {
             size_t eol = string.find_first_of("\r\n", tokenPos);
             ASSERT_CORE(eol != std::string::npos, "Invalid token mark");
-            size_t begin = tokenPos + keyToken.size() + 1;
+            uint32_t spaceCount = CountChar(string, ' ', tokenPos, eol);
+            size_t begin = tokenPos + keyToken.size() + spaceCount;
             std::string key = string.substr(begin, eol - begin);
-
             size_t nextLinePos = string.find_first_not_of("\r\n", eol);
             tokenPos = string.find(keyToken, nextLinePos);
             result[key] = string.substr(nextLinePos, tokenPos - (nextLinePos == std::string::npos ? string.size() - 1 : nextLinePos));
@@ -45,4 +45,19 @@ namespace TncEngine {
         return result;
     }
 
+    uint32_t StringUtils::CountChar(const std::string &string, char character, uint32_t begin, uint32_t end)
+    {
+        uint32_t count = 0;
+
+        if (begin >= string.size() || end >= string.size() || begin >= end)
+            return count;
+
+        for (uint32_t i = begin; i <= end; i++)
+        {
+            if (string[i] == character)
+                count++;
+        }
+
+        return count;
+    }
 }

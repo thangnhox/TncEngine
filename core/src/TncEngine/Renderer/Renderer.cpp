@@ -5,11 +5,12 @@
 
 namespace TncEngine {
 
-    Ref<Shader> Renderer::s_Shader = nullptr;
+    Ref<Shader> Renderer::s_Shader;
 
     void Renderer::Init()
     {
         RenderCommand::Init();
+        s_Shader = nullptr;
     }
 
     void Renderer::BeginScene()
