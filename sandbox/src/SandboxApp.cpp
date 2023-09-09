@@ -69,15 +69,20 @@ public:
         squareIndexBuffer = TncEngine::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
         m_SquareVertexArray->SetIndexBuffer(squareIndexBuffer);
 
+        auto& shaderLibrary = TncEngine::ShaderLibrary::Get();
+
         m_Shader = TncEngine::Shader::Create("sandbox/assets/shaders/Triangle.glsl");
         m_SquareShader = TncEngine::Shader::Create("sandbox/assets/shaders/FlatSquare.glsl");
         m_TextureShader = TncEngine::Shader::Create("sandbox/assets/shaders/Texture.glsl");
+        shaderLibrary.Add("ColorTriangle", m_Shader);
+        shaderLibrary.Add("FlatSquare", m_SquareShader);
+        shaderLibrary.Add("Texture", m_TextureShader);
 
         m_Checkerboard = TncEngine::Texture2D::Create("sandbox/assets/textures/Checkerboard.png");
         m_ChernoLogo = TncEngine::Texture2D::Create("sandbox/assets/textures/ChernoLogo.png");
 
-        TncEngine::Renderer::Bind(m_TextureShader);
-        std::dynamic_pointer_cast<TncEngine::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+        TncEngine::Renderer::Bind(shaderLibrary.Get("Texture"));
+        std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shaderLibrary.Get("Texture"))->UploadUniformInt("u_Texture", 0);
     }
 
     void OnUpdate(TncEngine::Timestep ts) override
@@ -124,14 +129,16 @@ public:
             }
         }
 
+        auto texture = TncEngine::ShaderLibrary::Get().Get("Texture");
+
         m_Checkerboard->Bind();
-        TncEngine::Renderer::Bind(m_TextureShader);
+        TncEngine::Renderer::Bind(texture);
         TncEngine::Renderer::Submit("u_ViewProjection", m_Camera.GetViewProjectionMatrix());
         TncEngine::Renderer::Submit("u_Transform", glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
         TncEngine::Renderer::Submit(m_SquareVertexArray);
 
         m_ChernoLogo->Bind();
-        TncEngine::Renderer::Bind(m_TextureShader);
+        TncEngine::Renderer::Bind(texture);
         TncEngine::Renderer::Submit("u_ViewProjection", m_Camera.GetViewProjectionMatrix());
         TncEngine::Renderer::Submit("u_Transform", glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
         TncEngine::Renderer::Submit(m_SquareVertexArray);
