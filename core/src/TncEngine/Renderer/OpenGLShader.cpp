@@ -12,8 +12,16 @@ namespace TncEngine {
     {
         if (type == "vert")
             return GL_VERTEX_SHADER;
+        if (type == "tesc")
+            return GL_TESS_CONTROL_SHADER;
+        if (type == "tese")
+            return GL_TESS_EVALUATION_SHADER;
+        if (type == "geom")
+            return GL_GEOMETRY_SHADER;
         if (type == "frag")
             return GL_FRAGMENT_SHADER;
+        if (type == "comp")
+            return GL_COMPUTE_SHADER;
 
         ASSERT_CORE(false, "Invalid Shader type " + type);
         return GL_NONE;
@@ -73,6 +81,8 @@ namespace TncEngine {
             return;
         }
 
+        // I personally like to keep this dynamic in case other shader type such as tessellation and geometry shader
+        // It's just few bytes anyway :)
         std::vector<GLuint> shaderIDs;
         shaderIDs.reserve(p_Sources.size());
 

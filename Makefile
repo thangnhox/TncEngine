@@ -1,7 +1,7 @@
 VULKAN_FLAG = -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
 CPPFLAGS = -std=c++17 -Wall
 CFLAGS = -std=c17 -Wall
-LIB_BUILD = -shared -fPIC
+LIB_BUILD = -fPIC
 GDBFLAG = -g
 
 # Absolute path to termux compiler so you can build this project inside Proot-Distro
