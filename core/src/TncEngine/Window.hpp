@@ -32,6 +32,8 @@ namespace TncEngine {
         inline bool IsVSync() const { return m_Data.VSync; }
         inline bool ShouldClose() const { return glfwWindowShouldClose(m_Window); }
         inline void* GetNativeWindow() const { return m_Window; }
+        inline bool IsMinimized() const { return m_Minimized; }
+        void SetMinimize(bool enabled) { m_Minimized = enabled; }
 
         void SetEventCallback(const EventCallbackFn& callback);
         void SetVSync(bool enabled);
@@ -53,6 +55,7 @@ namespace TncEngine {
         };
 
         WindowData m_Data;
+        bool m_Minimized = false;
     };
 
 }
