@@ -22,9 +22,9 @@ namespace TncEngine {
         virtual void LoadFile(bool compile = false) = 0;
 
     protected:
-        uint32_t p_RendererID;
-        std::string p_SourcePath;
-        std::unordered_map<std::string, std::string> p_Sources;
+        uint32_t m_RendererID;
+        std::string m_SourcePath;
+        std::unordered_map<std::string, std::string> m_Sources;
 
     public:
         static Ref<Shader> Create(const std::string& filepath);
@@ -36,17 +36,19 @@ namespace TncEngine {
     {
     public:
         ShaderLibrary(const ShaderLibrary&) = delete;
-
         static ShaderLibrary& Get();
 
+    public:
         void Add(const std::string& name ,const Ref<Shader>& shader);
         Ref<Shader> Load(const std::string& filePath);
         Ref<Shader> Load(const std::string& name, const std::string& filePath);
 
         Ref<Shader> Get(const std::string& name);
         bool Exists(const std::string& name);
+
     private:
         ShaderLibrary() {}
+        
     private:
         std::unordered_map<std::string, Ref<Shader>> m_Shaders;
     };
