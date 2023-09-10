@@ -19,6 +19,8 @@ namespace TncEngine {
         static void Submit(const std::string& name, const glm::mat4& matrix = glm::mat4(1.0f));
         static void Submit(const Ref<VertexArray>& vertexArray);
 
+        static void SetViewPort(uint32_t width, uint32_t height);
+
         inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
     private:
         static Ref<Shader> s_Shader;

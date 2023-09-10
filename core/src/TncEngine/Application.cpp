@@ -40,6 +40,7 @@ namespace TncEngine {
     {
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<WindowClosedEvent>(BIND_EVENT_FN(OnWindowClose));
+        dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResizedEvent));
 
         for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
         {
@@ -69,8 +70,11 @@ namespace TncEngine {
             Timestep timestep = time - m_LastFrameTime;
             m_LastFrameTime = time;
 
-            for (Layer* layer : m_LayerStack)
-                layer->OnUpdate(timestep);
+            if (!m_Window->IsMinimized())
+            {
+                for (Layer* layer : m_LayerStack)
+                    layer->OnUpdate(timestep);
+            }
 
             m_ImGuiLayer->Being();
             for (Layer* layer : m_LayerStack)
@@ -87,4 +91,14 @@ namespace TncEngine {
         return true;
     }
 
+    bool Application::OnWindowResizedEvent(WindowResizeEvent &e)
+    {
+        m_Window->SetMinimize(!e.GetWidth() || !e.GetHeight());
+        if (m_Window->IsMinimized())
+            return false;
+
+        Renderer::SetViewPort(e.GetWidth(), e.GetHeight());
+
+        return false;
+    }
 }

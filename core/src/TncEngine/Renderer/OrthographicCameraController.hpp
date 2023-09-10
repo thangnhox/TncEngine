@@ -19,6 +19,9 @@ namespace TncEngine {
         OrthographicCamera& GetCamera() { return m_OrthographicCamera; }
         const OrthographicCamera& GetCamera() const { return m_OrthographicCamera; }
 
+        void SetZoomLevel(float zoomLevel) { m_ZoomLevel = zoomLevel; }
+        float GetZoomLevel() const { return m_ZoomLevel; }
+
     private:
         bool OnMouseScrolled(MouseScrolledEvent& e);
         bool OnWindowResized(WindowResizeEvent& e);

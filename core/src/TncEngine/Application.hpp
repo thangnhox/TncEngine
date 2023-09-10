@@ -28,6 +28,7 @@ namespace TncEngine {
         inline static Application& Get() { return *s_Instance; }
     private:
         bool OnWindowClose(WindowClosedEvent& e);
+        bool OnWindowResizedEvent(WindowResizeEvent& e);
     protected:
         std::unique_ptr<Window> m_Window;
         ImGuiLayer* m_ImGuiLayer;
