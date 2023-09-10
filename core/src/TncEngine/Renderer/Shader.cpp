@@ -7,7 +7,7 @@
 #include <TncEngine/Utils/StringUtils.hpp>
 
 namespace TncEngine {
-    
+
     Ref<Shader> Shader::Create(const std::string &filepath)
     {
         switch(Renderer::GetAPI())

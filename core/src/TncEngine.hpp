@@ -12,6 +12,7 @@
 #include "TncEngine/Input/MouseButtonCodes.hpp"
 
 #include "TncEngine/Layers/ImGuiLayer.hpp"
+#include "TncEngine/Renderer/OrthographicCameraController.hpp"
 
 // ------   Renderer   -------------
 #include "TncEngine/Renderer/Renderer.hpp"
@@ -22,7 +23,6 @@
 #include "TncEngine/Renderer/Texture.hpp"
 #include "TncEngine/Renderer/VertexArray.hpp"
 
-#include "TncEngine/Renderer/OrthographicCamera.hpp"
 
 // ------ Entry Point --------------
 #include "TncEngine/EntryPoint.hpp"

@@ -23,35 +23,35 @@ namespace TncEngine {
         if (type == "comp")
             return GL_COMPUTE_SHADER;
 
-        ASSERT_CORE(false, "Invalid Shader type " + type);
+        TncEngine_CORE_FATAL("Invalid shader type '{0}'", type);
         return GL_NONE;
     }
 
     OpenGLShader::OpenGLShader(const std::string &vertexSrc, const std::string &fragmentSrc)
     {
-        p_RendererID = 0;
-        p_SourcePath.clear();
-        p_Sources["vert"] = vertexSrc;
-        p_Sources["frag"] = fragmentSrc;
+        m_RendererID = 0;
+        m_SourcePath.clear();
+        m_Sources["vert"] = vertexSrc;
+        m_Sources["frag"] = fragmentSrc;
         Compile();
     }
 
     OpenGLShader::OpenGLShader(const std::string &sourcePath)
     {
-        p_RendererID = 0;
-        p_SourcePath = sourcePath;
+        m_RendererID = 0;
+        m_SourcePath = sourcePath;
         LoadFile();
         Compile();
     }
 
     OpenGLShader::~OpenGLShader()
     {
-        glDeleteProgram(p_RendererID);
+        glDeleteProgram(m_RendererID);
     }
 
     void OpenGLShader::Bind() const
     {
-        glUseProgram(p_RendererID);
+        glUseProgram(m_RendererID);
     }
 
     void OpenGLShader::Unbind() const
@@ -61,21 +61,21 @@ namespace TncEngine {
 
     void OpenGLShader::LoadFile(bool compile)
     {
-        if (p_SourcePath.empty())
+        if (m_SourcePath.empty())
         {
             ASSERT_CORE(false, "This Shader instance [{0}] doesn't init with file path", fmt::ptr(this));
             return;
         }
-        std::string source = StringUtils::LoadFile(p_SourcePath);
+        std::string source = StringUtils::LoadFile(m_SourcePath);
         if (source.empty()) return;
-        p_Sources = StringUtils::SplitString("#type", source);
+        m_Sources = StringUtils::SplitString("#type", source);
 
         if (compile) Compile();
     }
 
     void OpenGLShader::Compile()
     {
-        if (p_Sources.empty())
+        if (m_Sources.empty())
         {
             TncEngine_CORE_ERROR("This Shader instance [{0}] has no source!", fmt::ptr(this));
             return;
@@ -84,12 +84,12 @@ namespace TncEngine {
         // I personally like to keep this dynamic in case other shader type such as tessellation and geometry shader
         // It's just few bytes anyway :)
         std::vector<GLuint> shaderIDs;
-        shaderIDs.reserve(p_Sources.size());
+        shaderIDs.reserve(m_Sources.size());
 
         // Get a program object.
         GLuint program = glCreateProgram();
 
-        for (auto& kv : p_Sources)
+        for (auto& kv : m_Sources)
         {
             GLenum type = ShaderTypeFromString(kv.first);
 
@@ -167,11 +167,11 @@ namespace TncEngine {
             glDetachShader(program, id);
 
         // Delete Existing program for this instance
-        if (p_RendererID)
+        if (m_RendererID)
         {
-            glDeleteProgram(p_RendererID);
+            glDeleteProgram(m_RendererID);
         }
-        p_RendererID = program;
+        m_RendererID = program;
     }
 
     void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4 &matrix)
@@ -187,7 +187,7 @@ namespace TncEngine {
     int OpenGLShader::GetUniformLocation(const std::string name) const
     {
         if (m_UniformLocationCache.find(name) == m_UniformLocationCache.end())
-            m_UniformLocationCache[name] = glGetUniformLocation(p_RendererID, name.c_str());
+            m_UniformLocationCache[name] = glGetUniformLocation(m_RendererID, name.c_str());
         return m_UniformLocationCache[name];
     }
 
