@@ -3,14 +3,14 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/core/src",
-                "${workspaceFolder}/core/vendore/spdlog/include",
-                "${workspaceFolder}/core/vendore/GLFW/include",
-                "${workspaceFolder}/core/vendore/Glad/include",
-                "${workspaceFolder}/core/vendore/ImGUI/backends",
-                "${workspaceFolder}/core/vendore/ImGUI/frontends",
-                "${workspaceFolder}/core/vendore/glm",
-                "${workspaceFolder}/core/vendore/stb_image"
+                "${workspaceFolder}/TncEngine/src",
+                "${workspaceFolder}/TncEngine/vendore/spdlog/include",
+                "${workspaceFolder}/TncEngine/vendore/GLFW/include",
+                "${workspaceFolder}/TncEngine/vendore/Glad/include",
+                "${workspaceFolder}/TncEngine/vendore/ImGUI/backends",
+                "${workspaceFolder}/TncEngine/vendore/ImGUI/frontends",
+                "${workspaceFolder}/TncEngine/vendore/glm",
+                "${workspaceFolder}/TncEngine/vendore/stb_image"
             ],
             "defines": ["TNC_DEBUG"],
             "compilerPath": "/usr/bin/g++",

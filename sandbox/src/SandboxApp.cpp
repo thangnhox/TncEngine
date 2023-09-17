@@ -18,7 +18,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 
-#include <TncEngine/Renderer/OpenGLShader.hpp>
+#include <Platform/OpenGL/OpenGLShader.hpp>
 
 class ExampleLayer : public TncEngine::Layer
 {
@@ -71,12 +71,9 @@ public:
 
         auto& shaderLibrary = TncEngine::ShaderLibrary::Get();
 
-        m_Shader = TncEngine::Shader::Create("sandbox/assets/shaders/Triangle.glsl");
-        m_SquareShader = TncEngine::Shader::Create("sandbox/assets/shaders/FlatSquare.glsl");
-        m_TextureShader = TncEngine::Shader::Create("sandbox/assets/shaders/Texture.glsl");
-        shaderLibrary.Add("ColorTriangle", m_Shader);
-        shaderLibrary.Add("FlatSquare", m_SquareShader);
-        shaderLibrary.Add("Texture", m_TextureShader);
+        shaderLibrary.Load("ColorTriangle", "sandbox/assets/shaders/Triangle.glsl");
+        shaderLibrary.Load("FlatSquare", "sandbox/assets/shaders/FlatSquare.glsl");
+        shaderLibrary.Load("Texture", "sandbox/assets/shaders/Texture.glsl");
 
         m_Checkerboard = TncEngine::Texture2D::Create("sandbox/assets/textures/Checkerboard.png");
         m_ChernoLogo = TncEngine::Texture2D::Create("sandbox/assets/textures/ChernoLogo.png");
@@ -96,8 +93,8 @@ public:
 
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-        TncEngine::Renderer::Bind(m_SquareShader);
-        std::dynamic_pointer_cast<TncEngine::OpenGLShader>(m_SquareShader)->UploadUniformFloat3("u_Color", m_SquareColor);
+        TncEngine::Renderer::Bind(TncEngine::ShaderLibrary::Get("FlatSquare"));
+        std::dynamic_pointer_cast<TncEngine::OpenGLShader>(TncEngine::ShaderLibrary::Get("FlatSquare"))->UploadUniformFloat3("u_Color", m_SquareColor);
 
         for (int y = 0; y < 20; y++)
         {
@@ -106,14 +103,14 @@ public:
                 glm::vec3 pos = glm::vec3(x * 0.11f, y * 0.11f, 0.0f);
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
 
-                TncEngine::Renderer::Bind(m_SquareShader);
+                TncEngine::Renderer::Bind(TncEngine::ShaderLibrary::Get("FlatSquare"));
                 TncEngine::Renderer::Submit("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
                 TncEngine::Renderer::Submit("u_Transform", transform);
                 TncEngine::Renderer::Submit(m_SquareVertexArray);
             }
         }
 
-        auto texture = TncEngine::ShaderLibrary::Get().Get("Texture");
+        auto texture = TncEngine::ShaderLibrary::Get("Texture");
 
         m_Checkerboard->Bind();
         TncEngine::Renderer::Bind(texture);
@@ -154,8 +151,6 @@ public:
         ImGui::End();
     }
 private:
-    TncEngine::Ref<TncEngine::Shader> m_Shader;
-    TncEngine::Ref<TncEngine::Shader> m_SquareShader, m_TextureShader;
     TncEngine::Ref<TncEngine::VertexArray> m_VertexArray;
     TncEngine::Ref<TncEngine::VertexArray> m_SquareVertexArray;
 

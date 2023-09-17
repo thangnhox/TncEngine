@@ -17,30 +17,30 @@ GL_FLAG = -lGL
 IMGUI_FLAG = -limgui
 
 # Third party include
-SPDLOG_INCLUDE = -Icore/vendore/spdlog/include
-GLFW_INCLUDE = -Icore/vendore/GLFW/include
-GLAD_INCLUDE = -Icore/vendore/Glad/include
-IMGUI_FRONTENDS_INCLUDE = -Icore/vendore/ImGUI/frontends
-IMGUI_BACKENDS_INCLUDE = -Icore/vendore/ImGUI/backends
-GLM_INCLUDE = -Icore/vendore/glm
-STB_INCLUDE = -Icore/vendore/stb_image
+SPDLOG_INCLUDE = -ITncEngine/vendore/spdlog/include
+GLFW_INCLUDE = -ITncEngine/vendore/GLFW/include
+GLAD_INCLUDE = -ITncEngine/vendore/Glad/include
+IMGUI_FRONTENDS_INCLUDE = -ITncEngine/vendore/ImGUI/frontends
+IMGUI_BACKENDS_INCLUDE = -ITncEngine/vendore/ImGUI/backends
+GLM_INCLUDE = -ITncEngine/vendore/glm
+STB_INCLUDE = -ITncEngine/vendore/stb_image
 
 # My include
-CORE_INCLUDE = -Icore/src
+CORE_INCLUDE = -ITncEngine/src
 
 .PHONY: core sandbox setup core_PCH test
 
 # Makefile Variable
 SHELL = /bin/bash
 
-core_Srcs = $(shell find core/src/ -name '*.cpp') core/vendore/stb_image/stb_image.cpp
-core_Objs = $(foreach file,$(patsubst %.cpp,%.o,$(notdir $(core_Srcs))),bin/objectFiles/core/$(file))
-core_Include = $(foreach file,$(patsubst %.cpp,%.include,$(notdir $(core_Srcs))),bin/includeList/core/$(file))
+core_Srcs = $(shell find TncEngine/src/ -name '*.cpp') TncEngine/vendore/stb_image/stb_image.cpp
+core_Objs = $(foreach file,$(patsubst %.cpp,%.o,$(notdir $(core_Srcs))),bin/objectFiles/TncEngine/$(file))
+core_Include = $(foreach file,$(patsubst %.cpp,%.include,$(notdir $(core_Srcs))),bin/includeList/TncEngine/$(file))
 core_Lib = bin/lib/libTncEngineCore.a
-glad_Srcs = $(shell find core/vendore/Glad/ -name '*.c')
+glad_Srcs = $(shell find TncEngine/vendore/Glad/ -name '*.c')
 glad_Objs = $(foreach file,$(patsubst %.c,%.o,$(notdir $(glad_Srcs))),bin/objectFiles/glad/$(file))
 glad_Lib = bin/lib/libglad.a
-imgui_Srcs = $(shell find core/vendore/ImGUI/ -name '*.cpp')
+imgui_Srcs = $(shell find TncEngine/vendore/ImGUI/ -name '*.cpp')
 imgui_Objs = $(foreach file,$(patsubst %.cpp,%.o,$(notdir $(imgui_Srcs))),bin/objectFiles/imgui/$(file))
 imgui_Lib = bin/lib/libimgui.a
 
@@ -48,7 +48,7 @@ sandbox_Srcs = $(shell find sandbox/src/ -name '*.cpp')
 sandbox_Exe = bin/intermidiate/SandboxApp
 
 glfw3_Lib = bin/lib/libglfw3.a
-binary_Folders = bin/intermidiate bin/submoduleBuild/GLFW bin/objectFiles/core bin/objectFiles/glad bin/objectFiles/imgui bin/lib bin/includeList/core
+binary_Folders = bin/intermidiate bin/submoduleBuild/GLFW bin/objectFiles/TncEngine bin/objectFiles/glad bin/objectFiles/imgui bin/lib bin/includeList/TncEngine
 
 # Make some empty object files in case find could not detect files in first compile
 setup: $(binary_Folders) $(glfw3_Lib) $(glad_Lib) $(imgui_Lib)
@@ -58,14 +58,14 @@ $(binary_Folders):
 	mkdir -p $@
 
 $(glfw3_Lib):
-	cmake -S core/vendore/GLFW -B bin/submoduleBuild/GLFW
+	cmake -S TncEngine/vendore/GLFW -B bin/submoduleBuild/GLFW
 	cd bin/submoduleBuild/GLFW && $(MAKE) && cp src/libglfw3.a ../../lib/
 
 core: $(binary_Folders) $(core_Lib)
 	@echo done
 
 core_PCH:
-	g++ $(CPPFLAGS) $(SPDLOG_INCLUDE) $(CORE_INCLUDE) core/src/TncPCH.hpp
+	g++ $(CPPFLAGS) $(SPDLOG_INCLUDE) $(CORE_INCLUDE) TncEngine/src/TncPCH.hpp
 
 sandbox: $(binary_Folders) $(sandbox_Exe)
 	gdb $(sandbox_Exe)
@@ -87,7 +87,7 @@ $(sandbox_Exe): $(glfw3_Lib) $(glad_Lib) $(imgui_Lib) $(core_Lib) $(sandbox_Srcs
 	@g++ $(GDBFLAG) $(CPPFLAGS) -Lbin/lib $(CORE_INCLUDE) $(GLFW_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(STB_INCLUDE) -o $@ $(sandbox_Srcs) $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
 
 define build_CoreObjects
-bin/objectFiles/core/$$(patsubst %.cpp,%.o,$$(notdir $(1))): $(1) $(filter-out $(1),$(shell cat bin/includeList/core/$(patsubst %.cpp,%.include,$(notdir $(1))) 2>/dev/null))
+bin/objectFiles/TncEngine/$$(patsubst %.cpp,%.o,$$(notdir $(1))): $(1) $(filter-out $(1),$(shell cat bin/includeList/TncEngine/$(patsubst %.cpp,%.include,$(notdir $(1))) 2>/dev/null))
 	$$(info Compiling $(1))
 	@g++ $$(GDBFLAG) $$(LIB_BUILD) $$(CPPFLAGS) $$(GLFW_INCLUDE) $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(STB_INCLUDE) $$(TNC_DEBUG) -c $$< -o $$@
 endef
@@ -95,7 +95,7 @@ endef
 # Generate user header list for specific Source file include every header inside vendore will update if source is modified
 # My opinion is if header is modified any source related to it need to be recompile
 define gen_CoreIncludeList
-bin/includeList/core/$$(patsubst %.cpp,%.include,$$(notdir $(1))): $(1) bin/objectFiles/core/$(patsubst %.cpp,%.o,$(notdir $(1)))
+bin/includeList/TncEngine/$$(patsubst %.cpp,%.include,$$(notdir $(1))): $(1) bin/objectFiles/TncEngine/$(patsubst %.cpp,%.o,$(notdir $(1)))
 	$$(info Generating $$@)
 	@g++ -MM $$(SPDLOG_INCLUDE) $$(GLAD_INCLUDE) $$(CORE_INCLUDE) $$(IMGUI_FRONTENDS_INCLUDE) $$(IMGUI_BACKENDS_INCLUDE) $$(GLM_INCLUDE) $$(STB_INCLUDE) $(1) > $$(patsubst %.include,%.tmp,$$@)
 	@cat $$(patsubst %.include,%.tmp,$$@) | sed 's/$$(patsubst %.cpp,%.o,$$(notdir $(1))): //g' | sed 's/\\//g' - > $$@

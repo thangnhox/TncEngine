@@ -1,9 +1,9 @@
-[submodule "core/vendore/spdlog"]
-	path = core/vendore/spdlog
+[submodule "TncEngine/vendore/spdlog"]
+	path = TncEngine/vendore/spdlog
 	url = https://github.com/gabime/spdlog
-[submodule "core/vendore/GLFW"]
-	path = core/vendore/GLFW
+[submodule "TncEngine/vendore/GLFW"]
+	path = TncEngine/vendore/GLFW
 	url = https://github.com/glfw/glfw
-[submodule "core/vendore/glm"]
-	path = core/vendore/glm
+[submodule "TncEngine/vendore/glm"]
+	path = TncEngine/vendore/glm
 	url = https://github.com/g-truc/glm.git
