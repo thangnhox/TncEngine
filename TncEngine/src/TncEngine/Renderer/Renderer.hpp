@@ -22,6 +22,7 @@ namespace TncEngine {
         static void SetViewPort(uint32_t width, uint32_t height);
 
         inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
+        inline static void SetAPI(RendererAPI::API api) { RendererAPI::SetAPI(api); }
     private:
         static Ref<Shader> s_Shader;
     };

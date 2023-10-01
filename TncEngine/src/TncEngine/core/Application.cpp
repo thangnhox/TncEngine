@@ -19,6 +19,8 @@ namespace TncEngine {
     {
         ASSERT_CORE(!s_Instance, "Application already exists");
         s_Instance = this;
+        
+        Renderer::SetAPI(RendererAPI::API::OpenGL);
 
         m_Window = Window::Create();
         m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));

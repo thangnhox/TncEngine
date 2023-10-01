@@ -1,3 +1,4 @@
+#define _MAIN_PROGRAM_
 #include <TncEngine.hpp>
 
 // #include <glm/vec3.hpp>                 // glm::vec3

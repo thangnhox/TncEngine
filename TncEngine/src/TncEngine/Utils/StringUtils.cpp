@@ -72,4 +72,21 @@ namespace TncEngine {
         return filePath.substr(lastSlash, count);
     }
 
+    std::string StringUtils::ChangeType(const std::string &text, StringType type)
+    {
+        std::string result;
+        result.resize(text.size());
+
+        for (size_t i = 0; i < text.size(); i++)
+        {
+            switch (type)
+            {
+            case StringType::LowerCase:     result[i] = tolower(text[i]);
+            case StringType::UpperCase:     result[i] = toupper(text[i]);
+            }
+        }
+
+        return result;
+    }
+
 }

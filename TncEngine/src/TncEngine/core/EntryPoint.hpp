@@ -4,6 +4,7 @@
 
 extern TncEngine::Application* TncEngine::CreateApplication();
 
+#ifdef _MAIN_PROGRAM_
 int main(int argc, char** argv)
 {
     TncEngine::Log::Init();
@@ -15,3 +16,4 @@ int main(int argc, char** argv)
 
     return 0;
 }
+#endif
