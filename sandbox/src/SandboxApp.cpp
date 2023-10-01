@@ -21,6 +21,8 @@
 
 #include <Platform/OpenGL/OpenGLShader.hpp>
 
+#include "Sandbox2D.hpp"
+
 class ExampleLayer : public TncEngine::Layer
 {
 public:
@@ -167,7 +169,8 @@ class Sanbox : public TncEngine::Application
 public:
     Sanbox()
     {
-        PushLayer(new ExampleLayer());
+        // PushLayer(new ExampleLayer());
+        PushLayer(new Sandbox2D());
     }
 
     ~Sanbox()
