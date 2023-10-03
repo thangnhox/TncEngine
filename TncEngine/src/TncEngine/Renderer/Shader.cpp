@@ -64,14 +64,12 @@ namespace TncEngine {
         return m_Shaders[name];
     }
 
-    Ref<Shader> ShaderLibrary::GetImpl(const std::string &name)
+    Ref<Shader> ShaderLibrary::GetImpl(const std::string &name, const std::function<Ref<Shader>(const std::string &)> &exceptionHandler)
     {
         if (!ExistsImpl(name))
         {
-            TncEngine_CORE_FATAL("Shader ID {0} doesn't exists!", name);
-            return nullptr;
+            return exceptionHandler(name);
         }
-
         return m_Shaders[name];
     }
 

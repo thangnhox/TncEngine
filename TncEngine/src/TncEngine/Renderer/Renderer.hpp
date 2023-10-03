@@ -16,8 +16,8 @@ namespace TncEngine {
         static void EndScene();
 
         static void Bind(const Ref<Shader>& shader);
-        static void Submit(const std::string& name, const glm::mat4& matrix = glm::mat4(1.0f));
         static void Submit(const Ref<VertexArray>& vertexArray);
+        static void Submit(const std::function<void(const Ref<Shader>&)>& func);
 
         static void SetViewPort(uint32_t width, uint32_t height);
 

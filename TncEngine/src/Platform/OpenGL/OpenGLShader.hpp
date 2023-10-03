@@ -25,8 +25,8 @@ namespace TncEngine {
         void UploadUniformFloat(const std::string& name, float value);
         void UploadUniformInt(const std::string& name, int value);
 
-        void UploadUniformMat4(const std::string& name, const glm::mat4& matrix);
-        void UploadUniformMat3(const std::string& name, const glm::mat3& matrix);
+        void UploadUniformMat4(const std::string& name, const glm::mat4& matrix = glm::mat4(1.0f));
+        void UploadUniformMat3(const std::string& name, const glm::mat3& matrix = glm::mat3(1.0f));
     private:
         int GetUniformLocation(const std::string name) const;
     private:

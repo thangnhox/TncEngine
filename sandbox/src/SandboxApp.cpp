@@ -107,8 +107,12 @@ public:
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
 
                 TncEngine::Renderer::Bind(TncEngine::ShaderLibrary::Get("FlatSquare"));
-                TncEngine::Renderer::Submit("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
-                TncEngine::Renderer::Submit("u_Transform", transform);
+                TncEngine::Renderer::Submit([&](const TncEngine::Ref<TncEngine::Shader>& shader)
+                {
+                    std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
+                    std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_Transform", transform);
+
+                });
                 TncEngine::Renderer::Submit(m_SquareVertexArray);
             }
         }
@@ -117,14 +121,22 @@ public:
 
         m_Checkerboard->Bind();
         TncEngine::Renderer::Bind(texture);
-        TncEngine::Renderer::Submit("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
-        TncEngine::Renderer::Submit("u_Transform", glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+        TncEngine::Renderer::Submit([&](const TncEngine::Ref<TncEngine::Shader>& shader)
+        {
+            std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
+            std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_Transform", glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
+        });
         TncEngine::Renderer::Submit(m_SquareVertexArray);
 
         m_ChernoLogo->Bind();
         TncEngine::Renderer::Bind(texture);
-        TncEngine::Renderer::Submit("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
-        TncEngine::Renderer::Submit("u_Transform", glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+        TncEngine::Renderer::Submit([&](const TncEngine::Ref<TncEngine::Shader>& shader)
+        {
+            std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
+            std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_Transform", glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
+        });
         TncEngine::Renderer::Submit(m_SquareVertexArray);
 
         // TncEngine::Renderer::Bind(m_Shader);

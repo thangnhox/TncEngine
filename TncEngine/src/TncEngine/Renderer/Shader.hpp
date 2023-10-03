@@ -49,6 +49,9 @@ namespace TncEngine {
 
         // Get shader
         static Ref<Shader> Get(const std::string& name) { return Get().GetImpl(name); }
+        
+        // Get shader with custom null handler
+        static Ref<Shader> Get(const std::string& name, const std::function<Ref<Shader>(const std::string&)>& exceptionHandler) { return Get().GetImpl(name, exceptionHandler); }
 
         // Check shader
         static bool Exists(const std::string& name) { return Get().ExistsImpl(name); }
@@ -58,7 +61,12 @@ namespace TncEngine {
         Ref<Shader> LoadImpl(const std::string& filePath);
         Ref<Shader> LoadImpl(const std::string& name, const std::string& filePath);
 
-        Ref<Shader> GetImpl(const std::string& name);
+        Ref<Shader> GetImpl(const std::string& name, const std::function<Ref<Shader>(const std::string&)>& exceptionHandler = [](const std::string& name)
+        {
+            TncEngine_CORE_FATAL("Shader ID {0} doesn't exists!", name);
+            return nullptr;
+        });
+        
         bool ExistsImpl(const std::string& name);
 
     private:

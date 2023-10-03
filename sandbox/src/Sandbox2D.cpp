@@ -3,6 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
+#include <memory>
 
 #include <Platform/OpenGL/OpenGLShader.hpp>
 
@@ -24,8 +25,12 @@ void Sandbox2D::OnUpdate(TncEngine::Timestep ts)
     std::dynamic_pointer_cast<TncEngine::OpenGLShader>(TncEngine::ShaderLibrary::Get("FlatColorSquare"))->UploadUniformFloat4("u_Color", m_SquareColor);
 
     TncEngine::Renderer::Bind(TncEngine::ShaderLibrary::Get("FlatColorSquare"));
-    TncEngine::Renderer::Submit("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
-    TncEngine::Renderer::Submit("u_Transform", glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+    TncEngine::Renderer::Submit([&](const TncEngine::Ref<TncEngine::Shader>& shader)
+    {
+        std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
+        std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_Transform", glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
+    });
     TncEngine::Renderer::Submit(m_SquareVertexArray);
 
     TncEngine::Renderer::EndScene();
