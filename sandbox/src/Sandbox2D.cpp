@@ -5,6 +5,8 @@
 #include <imgui.h>
 #include <memory>
 
+#include <TncEngine/Renderer/Renderer2D.hpp>
+
 #include <Platform/OpenGL/OpenGLShader.hpp>
 
 Sandbox2D::Sandbox2D()
@@ -19,21 +21,19 @@ void Sandbox2D::OnUpdate(TncEngine::Timestep ts)
     TncEngine::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
     TncEngine::RenderCommand::Clear();
 
-    TncEngine::Renderer::BeginScene();
+    // TncEngine::Renderer2D::BeginScene(TncEngine::ShaderLibrary::Get("FlatColorSquare"), [&](const TncEngine::Ref<TncEngine::Shader>& shader)
+    // {
+    //     std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformFloat4("u_Color", m_SquareColor);
+    //     std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
+    //     std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_Transform");
+    // });
+    // TncEngine::Renderer2D::Draw();
 
-    TncEngine::Renderer::Bind(TncEngine::ShaderLibrary::Get("FlatColorSquare"));
-    std::dynamic_pointer_cast<TncEngine::OpenGLShader>(TncEngine::ShaderLibrary::Get("FlatColorSquare"))->UploadUniformFloat4("u_Color", m_SquareColor);
-
-    TncEngine::Renderer::Bind(TncEngine::ShaderLibrary::Get("FlatColorSquare"));
-    TncEngine::Renderer::Submit([&](const TncEngine::Ref<TncEngine::Shader>& shader)
-    {
-        std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
-        std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_Transform", glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
-
-    });
-    TncEngine::Renderer::Submit(m_SquareVertexArray);
-
-    TncEngine::Renderer::EndScene();
+    TncEngine::Renderer2D::BeginScene(TncEngine::ShaderLibrary::Get("TextureWithEditableColor"), m_CameraController.GetCamera());
+    TncEngine::Renderer2D::Draw({ -1.0f, 0.0f }, { 0.8f, 0.8f }, m_SquareColor);
+    TncEngine::Renderer2D::Draw({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { m_SquareColor.b, m_SquareColor.g, m_SquareColor.r, m_SquareColor.a });
+    TncEngine::Renderer2D::Draw({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, m_Checkerboard);
+    TncEngine::Renderer2D::EndScene();
 }
 
 void Sandbox2D::OnImGuiRender()
@@ -41,6 +41,7 @@ void Sandbox2D::OnImGuiRender()
     ImGui::Begin("Settings");
 
     ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
+    ImGui::DragFloat("Square Scale", &m_SquareScale, 1.0f, 0.0f, 20.0f);
 
     ImGui::End();
 }
@@ -52,31 +53,7 @@ void Sandbox2D::OnEvent(TncEngine::Event &e)
 
 void Sandbox2D::OnAttach()
 {
-    m_SquareVertexArray = TncEngine::VertexArray::Create();
-
-    float squareVertices[] = {
-        -0.5f, -0.5f, -0.0f,
-         0.5f, -0.5f, -0.0f,
-         0.5f,  0.5f, -0.0f,
-        -0.5f,  0.5f, -0.0f 
-    };
-
-    TncEngine::Ref<TncEngine::VertexBuffer> squareVertexBuffer;
-    squareVertexBuffer = TncEngine::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
-
-    squareVertexBuffer->SetLayout({
-        { TncEngine::ShaderDataType::Float3, "a_Position"},
-    });
-    m_SquareVertexArray->AddVertexBuffer(squareVertexBuffer);
-
-    uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-    TncEngine::Ref<TncEngine::IndexBuffer> squareIndexBuffer;
-    squareIndexBuffer = TncEngine::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
-    m_SquareVertexArray->SetIndexBuffer(squareIndexBuffer);
-
-    auto& shaderLibrary = TncEngine::ShaderLibrary::Get();
-
-    shaderLibrary.Load("FlatColorSquare", "sandbox/assets/shaders/FlatColorSquare.glsl");
+    m_Checkerboard = TncEngine::Texture2D::Create("sandbox/assets/textures/Checkerboard.png");
 }
 
 void Sandbox2D::OnDetach()

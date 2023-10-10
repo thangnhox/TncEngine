@@ -21,6 +21,8 @@
 
 #include <Platform/OpenGL/OpenGLShader.hpp>
 
+#include <TncEngine/Renderer/Renderer2D.hpp>
+
 #include "Sandbox2D.hpp"
 
 class ExampleLayer : public TncEngine::Layer
@@ -81,7 +83,7 @@ public:
         m_Checkerboard = TncEngine::Texture2D::Create("sandbox/assets/textures/Checkerboard.png");
         m_ChernoLogo = TncEngine::Texture2D::Create("sandbox/assets/textures/ChernoLogo.png");
 
-        TncEngine::Renderer::Bind(shaderLibrary.Get("Texture"));
+        TncEngine::Renderer::BindShader(shaderLibrary.Get("Texture"));
         std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shaderLibrary.Get("Texture"))->UploadUniformInt("u_Texture", 0);
     }
 
@@ -96,7 +98,7 @@ public:
 
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-        TncEngine::Renderer::Bind(TncEngine::ShaderLibrary::Get("FlatSquare"));
+        TncEngine::Renderer::BindShader(TncEngine::ShaderLibrary::Get("FlatSquare"));
         std::dynamic_pointer_cast<TncEngine::OpenGLShader>(TncEngine::ShaderLibrary::Get("FlatSquare"))->UploadUniformFloat3("u_Color", m_SquareColor);
 
         for (int y = 0; y < 20; y++)
@@ -106,7 +108,7 @@ public:
                 glm::vec3 pos = glm::vec3(x * 0.11f, y * 0.11f, 0.0f);
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
 
-                TncEngine::Renderer::Bind(TncEngine::ShaderLibrary::Get("FlatSquare"));
+                TncEngine::Renderer::BindShader(TncEngine::ShaderLibrary::Get("FlatSquare"));
                 TncEngine::Renderer::Submit([&](const TncEngine::Ref<TncEngine::Shader>& shader)
                 {
                     std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
@@ -120,7 +122,7 @@ public:
         auto texture = TncEngine::ShaderLibrary::Get("Texture");
 
         m_Checkerboard->Bind();
-        TncEngine::Renderer::Bind(texture);
+        TncEngine::Renderer::BindShader(texture);
         TncEngine::Renderer::Submit([&](const TncEngine::Ref<TncEngine::Shader>& shader)
         {
             std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
@@ -130,7 +132,7 @@ public:
         TncEngine::Renderer::Submit(m_SquareVertexArray);
 
         m_ChernoLogo->Bind();
-        TncEngine::Renderer::Bind(texture);
+        TncEngine::Renderer::BindShader(texture);
         TncEngine::Renderer::Submit([&](const TncEngine::Ref<TncEngine::Shader>& shader)
         {
             std::dynamic_pointer_cast<TncEngine::OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
@@ -181,6 +183,40 @@ class Sanbox : public TncEngine::Application
 public:
     Sanbox()
     {
+        TncEngine::Renderer2D::Init([]()
+        {
+            TncEngine::Ref<TncEngine::VertexArray> squareVertexArray = TncEngine::VertexArray::Create();
+
+            float squareVertices[] = {
+                -0.5f, -0.5f, -0.0f, 0.0f, 0.0f,
+                 0.5f, -0.5f, -0.0f, 1.0f, 0.0f,
+                 0.5f,  0.5f, -0.0f, 1.0f, 1.0f,
+                -0.5f,  0.5f, -0.0f, 0.0f, 1.0f
+            };
+
+            TncEngine::Ref<TncEngine::VertexBuffer> squareVertexBuffer;
+            squareVertexBuffer = TncEngine::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
+
+            squareVertexBuffer->SetLayout({
+                { TncEngine::ShaderDataType::Float3, "a_Position"},
+                { TncEngine::ShaderDataType::Float2, "a_TexCoord"},
+            });
+            squareVertexArray->AddVertexBuffer(squareVertexBuffer);
+
+            uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
+            TncEngine::Ref<TncEngine::IndexBuffer> squareIndexBuffer;
+            squareIndexBuffer = TncEngine::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
+            squareVertexArray->SetIndexBuffer(squareIndexBuffer);
+
+            auto& shaderLibrary = TncEngine::ShaderLibrary::Get();
+
+            shaderLibrary.Load("FlatColorSquare", "sandbox/assets/shaders/FlatColorSquare.glsl");
+            shaderLibrary.Load("Texture", "sandbox/assets/shaders/Texture.glsl");
+            shaderLibrary.Load("TextureWithEditableColor" ,"sandbox/assets/shaders/TextureWithEditableColor.glsl");
+
+            return squareVertexArray;
+        });
+
         // PushLayer(new ExampleLayer());
         PushLayer(new Sandbox2D());
     }

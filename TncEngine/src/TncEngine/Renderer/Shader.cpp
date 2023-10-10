@@ -13,7 +13,7 @@ namespace TncEngine {
         switch(Renderer::GetAPI())
         {
             case RendererAPI::API::None:     ASSERT_CORE(false, "RendererAPI::API:None is currently not supported"); return nullptr;
-            case RendererAPI::API::OpenGL:   return std::make_shared<OpenGLShader>(filepath);
+            case RendererAPI::API::OpenGL:   return CreateRef<OpenGLShader>(filepath);
         }
 
         ASSERT_CORE(false, "Unknown RendererAPI::API");
@@ -25,7 +25,7 @@ namespace TncEngine {
         switch(Renderer::GetAPI())
         {
             case RendererAPI::API::None:     ASSERT_CORE(false, "RendererAPI::API:None is currently not supported"); return nullptr;
-            case RendererAPI::API::OpenGL:   return std::make_shared<OpenGLShader>(vertexSrc, fragmentSrc);
+            case RendererAPI::API::OpenGL:   return CreateRef<OpenGLShader>(vertexSrc, fragmentSrc);
         }
 
         ASSERT_CORE(false, "Unknown RendererAPI::API");

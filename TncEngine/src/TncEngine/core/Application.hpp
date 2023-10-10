@@ -30,7 +30,7 @@ namespace TncEngine {
         bool OnWindowClose(WindowClosedEvent& e);
         bool OnWindowResizedEvent(WindowResizeEvent& e);
     protected:
-        std::unique_ptr<Window> m_Window;
+        Scope<Window> m_Window;
         ImGuiLayer* m_ImGuiLayer;
         bool m_Running;
         LayerStack m_LayerStack;

@@ -11,7 +11,7 @@ namespace TncEngine {
         switch (Renderer::GetAPI())
         {
             case RendererAPI::API::None:         ASSERT_CORE(false, "RendererAPI::API::None is currently not supported"); return nullptr;
-            case RendererAPI::API::OpenGL:       return std::make_shared<OpenGLVertexArray>();
+            case RendererAPI::API::OpenGL:       return CreateRef<OpenGLVertexArray>();
         }
 
         ASSERT_CORE(false, "Unknown RendererAPI::API");
