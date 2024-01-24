@@ -67,24 +67,39 @@ namespace TncEngine {
         // Check shader
         static bool Exists(const std::string& name) { return Get().ExistsImpl(name); }
 
+        // Set default handler when no shader with given name exists
+        // If you intent to run handler temporally for certain call
+        // Please use Get(name, lambda)
+        static void SetNullHandler(std::function<Ref<Shader>(const std::string&)>&& func) { Get().SetNullHandlerImpl(func); }
+
     private:
         void AddImpl(const std::string& name ,const Ref<Shader>& shader);
         Ref<Shader> LoadImpl(const std::string& filePath);
         Ref<Shader> LoadImpl(const std::string& name, const std::string& filePath);
 
-        Ref<Shader> GetImpl(const std::string& name, const std::function<Ref<Shader>(const std::string&)>& exceptionHandler = [](const std::string& name)
-        {
-            TncEngine_CORE_FATAL("Shader ID {0} doesn't exists!", name);
-            return nullptr;
-        });
+        Ref<Shader> GetImpl(const std::string& name, const std::function<Ref<Shader>(const std::string&)>& exceptionHandler);
+        Ref<Shader> GetImpl(const std::string& name);
         
         bool ExistsImpl(const std::string& name);
 
     private:
-        ShaderLibrary() {}
+        ShaderLibrary()
+        {
+            SetNullHandlerImpl([](const std::string& name){
+                TncEngine_CORE_FATAL("Shader ID {0} doesn't exists!", name);
+                return nullptr;
+            });
+        }
+
+        template<typename fn>
+        void SetNullHandlerImpl(fn&& func)
+        {
+            m_NullHandler = func;
+        }
         
     private:
         std::unordered_map<std::string, Ref<Shader>> m_Shaders;
+        std::function<Ref<Shader>(const std::string&)> m_NullHandler;
     };
 
 }

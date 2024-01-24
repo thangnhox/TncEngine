@@ -7,8 +7,6 @@
 
 #include <TncEngine/Utils/Timestep.hpp>
 
-#include <GLFW/glfw3.h>
-
 namespace TncEngine {
 
 #define BIND_EVENT_FN(x) std::bind(&Application::x, this, std::placeholders::_1)
@@ -32,6 +30,8 @@ namespace TncEngine {
         PushOverlay(m_ImGuiLayer);
 
         m_Running = true;
+
+        m_LastFrameTime = Timestep::Now();
     }
 
     Application::~Application()
@@ -66,11 +66,13 @@ namespace TncEngine {
 
     void Application::run()
     {
+        Timestep timestep;   
         while (m_Running)
         {
-            float time = (float)glfwGetTime();
-            Timestep timestep = time - m_LastFrameTime;
-            m_LastFrameTime = time;
+            Timer frametime("frameTime", [&](const char*, float time)
+            {
+                timestep = time / 1000.0f;
+            });
 
             if (!m_Window->IsMinimized())
             {

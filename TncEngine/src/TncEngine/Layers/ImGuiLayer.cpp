@@ -57,12 +57,6 @@ namespace TncEngine {
         ImGui::DestroyContext();
     }
 
-    void ImGuiLayer::OnImGuiRender()
-    {
-        static bool show =  true;
-        ImGui::ShowDemoWindow(&show);
-    }
-
     void ImGuiLayer::Being()
     {
         ImGui_ImplOpenGL3_NewFrame();

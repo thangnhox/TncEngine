@@ -16,8 +16,20 @@ namespace TncEngine {
     public:
         static void Init();
 
-        inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
-        inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+        static bool IsInited();
+
+        inline static std::shared_ptr<spdlog::logger>& GetCoreLogger()
+        {
+            if (!IsInited())
+                Init();
+            return s_CoreLogger;
+        }
+        inline static std::shared_ptr<spdlog::logger>& GetClientLogger()
+        {
+            if (!IsInited())
+                Init();
+            return s_ClientLogger;
+        }
     };
 
 }

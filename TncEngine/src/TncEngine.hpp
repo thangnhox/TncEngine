@@ -23,9 +23,14 @@
 #include "TncEngine/Renderer/Texture.hpp"
 #include "TncEngine/Renderer/VertexArray.hpp"
 
+//---------  DEBUG  ----------------
+// Still usable event without define TNC_PROFILE
+// But all the macros will be disable
+#include "TncEngine/Utils/Instrumentor.hpp"
 
 // ------ Entry Point --------------
 // This will be disable by default
 // To enable, #define _MAIN_PROGRAM_ in cpp file where you think should place main function
 #include "TncEngine/core/EntryPoint.hpp"
 // ---------------------------------
+

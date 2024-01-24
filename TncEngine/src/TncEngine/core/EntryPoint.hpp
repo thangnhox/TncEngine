@@ -8,10 +8,14 @@ extern TncEngine::Application* TncEngine::CreateApplication();
 int main(int argc, char** argv)
 {
     TncEngine::Log::Init();
-    TncEngine_CORE_WARN("Innitialize Log!");
+    TncEngine_CORE_INFO("Innitialize Log!");
 
     auto app = TncEngine::CreateApplication();
+
+    TNC_PROFILE_BEGIN_SESSION("Runtime", "bin/Profiler/TncProfile-Runtime.json");
     app->run();
+    TNC_PROFILE_END_SESSION();
+
     delete app;
 
     return 0;

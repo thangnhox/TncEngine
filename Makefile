@@ -4,7 +4,7 @@ CFLAGS = -std=c17 -Wall
 LIB_BUILD = -shared -fPIC
 GDBFLAG = -g
 
-DEFINE = -D DEBUG
+DEFINE = -D TNC_PROFILE
 ENABLE_ASSERT = -D ENABLE_ASSERT
 GLFW_INCLUDE_NONE = -D GLFW_INCLUDE_NONE
 TNC_DEBUG = -D TNC_DEBUG
@@ -48,7 +48,7 @@ sandbox_Srcs = $(shell find sandbox/src/ -name '*.cpp')
 sandbox_Exe = bin/intermidiate/SandboxApp
 
 glfw3_Lib = bin/lib/libglfw3.a
-binary_Folders = bin/intermidiate bin/submoduleBuild/GLFW bin/objectFiles/TncEngine bin/objectFiles/glad bin/objectFiles/imgui bin/lib bin/includeList/TncEngine
+binary_Folders = bin/intermidiate bin/submoduleBuild/GLFW bin/objectFiles/TncEngine bin/objectFiles/glad bin/objectFiles/imgui bin/lib bin/includeList/TncEngine bin/Profiler
 
 # Make some empty object files in case find could not detect files in first compile
 setup: $(binary_Folders) $(glfw3_Lib) $(glad_Lib) $(imgui_Lib)
@@ -84,7 +84,7 @@ $(imgui_Lib):
 
 $(sandbox_Exe): $(glfw3_Lib) $(glad_Lib) $(imgui_Lib) $(core_Lib) $(sandbox_Srcs)
 	$(info Compiling $@)
-	@g++ $(GDBFLAG) $(CPPFLAGS) -Lbin/lib $(CORE_INCLUDE) $(GLFW_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(STB_INCLUDE) -o $@ $(sandbox_Srcs) $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG)
+	@g++ $(GDBFLAG) $(CPPFLAGS) -Lbin/lib $(CORE_INCLUDE) $(GLFW_INCLUDE) $(SPDLOG_INCLUDE) $(GLAD_INCLUDE) $(IMGUI_FRONTENDS_INCLUDE) $(IMGUI_BACKENDS_INCLUDE) $(GLM_INCLUDE) $(STB_INCLUDE) -o $@ $(sandbox_Srcs) $(CORE_FLAG) $(GLFW_FLAG) $(GLAD_FLAG) $(GL_FLAG) $(IMGUI_FLAG) $(DEFINE)
 
 define build_CoreObjects
 bin/objectFiles/TncEngine/$$(patsubst %.cpp,%.o,$$(notdir $(1))): $(1) $(filter-out $(1),$(shell cat bin/includeList/TncEngine/$(patsubst %.cpp,%.include,$(notdir $(1))) 2>/dev/null))

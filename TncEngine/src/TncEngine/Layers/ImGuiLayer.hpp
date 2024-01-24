@@ -16,7 +16,6 @@ namespace TncEngine {
 
         void OnAttach() override;
         void OnDetach() override;
-        void OnImGuiRender() override;
 
         void Being();
         void End();

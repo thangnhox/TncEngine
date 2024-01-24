@@ -12,7 +12,7 @@
                 "${workspaceFolder}/TncEngine/vendore/glm",
                 "${workspaceFolder}/TncEngine/vendore/stb_image"
             ],
-            "defines": ["TNC_DEBUG"],
+            "defines": ["TNC_DEBUG", "TNC_PROFILE"],
             "compilerPath": "/usr/bin/g++",
             "cStandard": "c17",
             "cppStandard": "c++17",

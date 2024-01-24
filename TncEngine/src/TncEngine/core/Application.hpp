@@ -34,7 +34,7 @@ namespace TncEngine {
         ImGuiLayer* m_ImGuiLayer;
         bool m_Running;
         LayerStack m_LayerStack;
-        float m_LastFrameTime = 0.0f;
+        float m_LastFrameTime;
         static Application* s_Instance;
     };
 

@@ -18,7 +18,8 @@ private:
     TncEngine::OrthographicCameraController m_CameraController;
     glm::vec4 m_SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 
-    float m_SquareScale = 10.0f;
+    float m_FrameTime = 0.0f;
+    float m_FramesPerSecond = 0.0f;
 
     TncEngine::Ref<TncEngine::Texture2D> m_Checkerboard;
 };

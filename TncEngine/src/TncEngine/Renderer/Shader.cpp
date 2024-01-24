@@ -73,6 +73,15 @@ namespace TncEngine {
         return m_Shaders[name];
     }
 
+    Ref<Shader> ShaderLibrary::GetImpl(const std::string &name)
+    {
+        if (!ExistsImpl(name))
+        {
+            return m_NullHandler(name);
+        }
+        return m_Shaders[name];
+    }
+
     bool ShaderLibrary::ExistsImpl(const std::string &name)
     {
         return m_Shaders.find(name) != m_Shaders.end();
